@@ -1,0 +1,82 @@
+package cc.worldmandia.kwebconverter.ui
+
+import androidx.compose.foundation.text.input.TextFieldState
+import cc.worldmandia.kwebconverter.logic.AddItemCommand
+import cc.worldmandia.kwebconverter.logic.CommandManager
+import cc.worldmandia.kwebconverter.logic.RemoveNodeCommand
+import cc.worldmandia.kwebconverter.model.*
+
+// --- UI Data Models ---
+sealed interface NodeKeyInfo
+data class MapKey(val state: TextFieldState, val entry: EditableMapEntry) : NodeKeyInfo
+data class ListIndex(val index: Int) : NodeKeyInfo
+
+sealed interface NodeUiItem {
+    val id: String
+    val level: Int
+}
+
+data class UiNode(
+    override val id: String,
+    val node: EditableNode,
+    val keyInfo: NodeKeyInfo?,
+    override val level: Int,
+    val mapId: String? = null, // Used for duplicate check
+    val onDelete: () -> Unit
+) : NodeUiItem {
+    // Helper to filter search
+    fun matches(query: String): Boolean {
+        if (query.isBlank()) return true
+        if (keyInfo is MapKey && keyInfo.state.text.toString().contains(query, true)) return true
+        if (node is EditableScalar && node.state.text.toString().contains(query, true)) return true
+        return false
+    }
+}
+
+data class UiAddAction(
+    override val id: String,
+    override val level: Int,
+    val onAdd: (NodeType) -> Unit
+) : NodeUiItem
+
+// --- Flattening Logic ---
+fun flattenTree(
+    node: EditableNode,
+    keyInfo: NodeKeyInfo? = null,
+    level: Int = 0,
+    cmd: CommandManager
+): List<NodeUiItem> {
+    val result = ArrayList<NodeUiItem>()
+
+    val parent = node.parent
+
+    val parentMapId = (parent as? EditableMapEntry)?.parentMap?.id
+
+    result.add(
+        UiNode(
+        id = if (parent is EditableMapEntry) parent.id else node.id,
+        node = node,
+        keyInfo = keyInfo,
+        level = level,
+        mapId = parentMapId,
+        onDelete = { cmd.execute(RemoveNodeCommand(node)) }
+    ))
+
+    // 2. Add Children (Recursion)
+    if (node is EditableList && node.isExpanded) {
+        node.items.forEachIndexed { index, child ->
+            result.addAll(flattenTree(child, ListIndex(index), level + 1, cmd))
+        }
+        result.add(UiAddAction("${node.id}_add", level + 1) { type ->
+            cmd.execute(AddItemCommand(node, type))
+        })
+    } else if (node is EditableMap && node.isExpanded) {
+        node.entries.forEach { entry ->
+            result.addAll(flattenTree(entry.value, MapKey(entry.keyState, entry), level + 1, cmd))
+        }
+        result.add(UiAddAction("${node.id}_add", level + 1) { type ->
+            cmd.execute(AddItemCommand(node, type))
+        })
+    }
+    return result
+}

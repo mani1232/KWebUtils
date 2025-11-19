@@ -1,0 +1,40 @@
+rootProject.name = "kwebconverter"
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
+pluginManagement {
+    repositories {
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        google {
+            mavenContent {
+                includeGroupAndSubgroups("androidx")
+                includeGroupAndSubgroups("com.android")
+                includeGroupAndSubgroups("com.google")
+            }
+        }
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+dependencyResolutionManagement {
+    repositories {
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        google {
+            mavenContent {
+                includeGroupAndSubgroups("androidx")
+                includeGroupAndSubgroups("com.android")
+                includeGroupAndSubgroups("com.google")
+            }
+        }
+        mavenCentral()
+    }
+
+    versionCatalogs {
+        create("kotlinWrappers") {
+            val wrappersVersion = "2025.11.11"
+            from("org.jetbrains.kotlin-wrappers:kotlin-wrappers-catalog:$wrappersVersion")
+        }
+    }
+}
+
+include(":composeApp")
