@@ -1,62 +1,7 @@
-package cc.worldmandia.kwebconverter.logic
+package cc.worldmandia.kwebconverter.presentation.feature.editor.logic
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.TextRange
-import cc.worldmandia.kwebconverter.model.*
-
-interface Command {
-    fun execute()
-    fun undo()
-}
-
-class CommandManager(private val maxHistory: Int = 25) {
-    private val _undoStack = mutableListOf<Command>()
-    private val _redoStack = mutableListOf<Command>()
-
-    var canUndo by mutableStateOf(false)
-    var canRedo by mutableStateOf(false)
-
-    fun execute(command: Command) {
-        command.execute()
-        _undoStack.add(command)
-        if (_undoStack.size > maxHistory) _undoStack.removeFirst()
-        _redoStack.clear()
-        updateState()
-    }
-
-    fun undo() {
-        if (_undoStack.isNotEmpty()) {
-            val command = _undoStack.removeLast()
-            command.undo()
-            _redoStack.add(command)
-            updateState()
-        }
-    }
-
-    fun clear() {
-        _undoStack.clear()
-        _redoStack.clear()
-        updateState()
-    }
-
-    fun redo() {
-        if (_redoStack.isNotEmpty()) {
-            val command = _redoStack.removeLast()
-            command.execute()
-            _undoStack.add(command)
-            updateState()
-        }
-    }
-
-    private fun updateState() {
-        canUndo = _undoStack.isNotEmpty()
-        canRedo = _redoStack.isNotEmpty()
-    }
-}
-
-// --- Specific Commands ---
+import cc.worldmandia.kwebconverter.presentation.model.*
 
 class AddItemCommand(
     private val parent: EditableNode,
@@ -173,7 +118,6 @@ class MoveItemCommand(
     }
 }
 
-// New Command for Drag and Drop
 class ReorderItemCommand(
     private val list: EditableList,
     private val fromIndex: Int,
@@ -187,7 +131,6 @@ class ReorderItemCommand(
     }
 
     override fun undo() {
-        // Обратное перемещение для отмены
         if (toIndex in list.items.indices) {
             val item = list.items.removeAt(toIndex)
             list.items.add(fromIndex, item)
@@ -215,7 +158,7 @@ class ReplaceNodeCommand(
 object NodeFactory {
     fun create(type: NodeType, parent: ParentContainer?): EditableNode {
         return when (type) {
-            NodeType.String -> EditableScalar("", ScalarType.String, parent)
+            NodeType.String -> EditableScalar("str", ScalarType.String, parent)
             NodeType.Number -> EditableScalar("0", ScalarType.Number, parent)
             NodeType.Boolean -> EditableScalar("true", ScalarType.Boolean, parent)
             NodeType.Null -> EditableNull(parent)

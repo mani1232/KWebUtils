@@ -1,4 +1,4 @@
-package cc.worldmandia.kwebconverter.ui
+package cc.worldmandia.kwebconverter.presentation.feature.editor.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -40,13 +40,13 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cc.worldmandia.kwebconverter.NodeSerializer
-import cc.worldmandia.kwebconverter.ParseResult
-import cc.worldmandia.kwebconverter.ParserType
-import cc.worldmandia.kwebconverter.logic.CommandManager
-import cc.worldmandia.kwebconverter.logic.MoveItemCommand
-import cc.worldmandia.kwebconverter.logic.ReplaceNodeCommand
-import cc.worldmandia.kwebconverter.model.*
+import cc.worldmandia.kwebconverter.domain.model.FileFormat
+import cc.worldmandia.kwebconverter.presentation.feature.editor.logic.CommandManager
+import cc.worldmandia.kwebconverter.presentation.feature.editor.logic.MoveItemCommand
+import cc.worldmandia.kwebconverter.presentation.feature.editor.logic.ReplaceNodeCommand
+import cc.worldmandia.kwebconverter.presentation.feature.editor.mapper.NodeSerializer
+import cc.worldmandia.kwebconverter.presentation.feature.editor.model.*
+import cc.worldmandia.kwebconverter.presentation.model.*
 import cc.worldmandia.kwebconverter.setPlainText
 import kotlinx.coroutines.launch
 
@@ -287,7 +287,7 @@ private fun KeyField(
 }
 
 @Composable
-fun AddActionRow(item: UiAddAction, rootType: ParserType) {
+fun AddActionRow(item: UiAddAction, rootType: FileFormat) {
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
 
@@ -331,7 +331,7 @@ fun AddActionRow(item: UiAddAction, rootType: ParserType) {
         DropdownMenu(expanded, { expanded = false }) {
             NodeType.entries.forEach { type ->
                 // Filter logic...
-                val isAllowed = if (rootType == ParserType.UNSUPPORTED) {
+                val isAllowed = if (rootType == FileFormat.UNSUPPORTED) {
                     type == NodeType.String || type == NodeType.Number || type == NodeType.Boolean
                 } else true
 
@@ -547,12 +547,12 @@ fun ContainerBadge(type: String, size: Int, openChar: String, closeChar: String)
 }
 
 @Composable
-fun ParseError(error: ParseResult.Error, backButton: () -> Unit) {
+fun ParseError(error: String, backButton: () -> Unit) {
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(Icons.Default.Error, null, tint = MaterialTheme.colorScheme.error)
             Text("Error parsing file", style = MaterialTheme.typography.titleLarge)
-            Text(error.message, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(error, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Button(onClick = backButton) { Text("Go Back") }
         }
     }

@@ -1,4 +1,4 @@
-package cc.worldmandia.kwebconverter.ui
+package cc.worldmandia.kwebconverter.presentation.feature.editor.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
@@ -17,25 +17,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cc.worldmandia.kwebconverter.ParserType
-import cc.worldmandia.kwebconverter.logic.CommandManager
-import cc.worldmandia.kwebconverter.logic.setAllExpanded
-import cc.worldmandia.kwebconverter.model.EditableNode
+import cc.worldmandia.kwebconverter.domain.model.FileFormat
+import cc.worldmandia.kwebconverter.presentation.common.BarFont
+import cc.worldmandia.kwebconverter.presentation.feature.editor.logic.CommandManager
+import cc.worldmandia.kwebconverter.presentation.feature.editor.logic.setAllExpanded
+import cc.worldmandia.kwebconverter.presentation.model.EditableNode
 import cc.worldmandia.kwebconverter.setPlainText
 import kotlinx.coroutines.launch
 
-// Используем тот же шрифт, что и в редакторе
-val BarFont = FontFamily.Monospace
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditorTopBar(
     title: String,
-    type: ParserType,
+    type: FileFormat,
     searchQuery: String,
     onSearchChange: (String) -> Unit,
     cmdManager: CommandManager,
@@ -43,7 +41,7 @@ fun EditorTopBar(
     onBack: () -> Unit,
     onSave: () -> Unit,
     onReset: () -> Unit,
-    onGenerateContent: () -> String?
+    onGenerateContent: () -> String?,
 ) {
     var isSearchActive by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }

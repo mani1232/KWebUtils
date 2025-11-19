@@ -1,15 +1,15 @@
-package cc.worldmandia.kwebconverter.model
+package cc.worldmandia.kwebconverter.presentation.model
 
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.*
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-@OptIn(ExperimentalUuidApi::class)
-fun generateId(): String = Uuid.generateV7().toHexDashString()
-
 enum class ScalarType { String, Number, Boolean }
 enum class NodeType { String, Number, Boolean, List, Map, Null }
+
+@OptIn(ExperimentalUuidApi::class)
+fun generateId(): String = Uuid.random().toHexString()
 
 sealed interface ParentContainer {
     fun replaceChild(oldNode: EditableNode, newNode: EditableNode)

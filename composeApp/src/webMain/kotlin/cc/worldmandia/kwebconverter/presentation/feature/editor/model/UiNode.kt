@@ -1,12 +1,12 @@
-package cc.worldmandia.kwebconverter.ui
+package cc.worldmandia.kwebconverter.presentation.feature.editor.model
 
 import androidx.compose.foundation.text.input.TextFieldState
-import cc.worldmandia.kwebconverter.logic.AddItemCommand
-import cc.worldmandia.kwebconverter.logic.CommandManager
-import cc.worldmandia.kwebconverter.logic.RemoveNodeCommand
-import cc.worldmandia.kwebconverter.model.*
+import cc.worldmandia.kwebconverter.presentation.feature.editor.logic.AddItemCommand
+import cc.worldmandia.kwebconverter.presentation.feature.editor.logic.CommandManager
+import cc.worldmandia.kwebconverter.presentation.feature.editor.logic.RemoveNodeCommand
+import cc.worldmandia.kwebconverter.presentation.model.*
 
-// --- UI Data Models ---
+// --- Key Info Models ---
 sealed interface NodeKeyInfo
 data class MapKey(val state: TextFieldState, val entry: EditableMapEntry) : NodeKeyInfo
 data class ListIndex(val index: Int) : NodeKeyInfo
@@ -16,15 +16,15 @@ sealed interface NodeUiItem {
     val level: Int
 }
 
+// Обертка для отображения узла в списке
 data class UiNode(
     override val id: String,
     val node: EditableNode,
     val keyInfo: NodeKeyInfo?,
     override val level: Int,
-    val mapId: String? = null, // Used for duplicate check
+    val mapId: String? = null,
     val onDelete: () -> Unit
 ) : NodeUiItem {
-    // Helper to filter search
     fun matches(query: String): Boolean {
         if (query.isBlank()) return true
         if (keyInfo is MapKey && keyInfo.state.text.toString().contains(query, true)) return true
@@ -33,13 +33,14 @@ data class UiNode(
     }
 }
 
+// Кнопка "Добавить" в UI
 data class UiAddAction(
     override val id: String,
     override val level: Int,
     val onAdd: (NodeType) -> Unit
 ) : NodeUiItem
 
-// --- Flattening Logic ---
+// --- Логика превращения дерева в плоский список ---
 fun flattenTree(
     node: EditableNode,
     keyInfo: NodeKeyInfo? = null,
@@ -47,11 +48,10 @@ fun flattenTree(
     cmd: CommandManager
 ): List<NodeUiItem> {
     val result = ArrayList<NodeUiItem>()
-
     val parent = node.parent
-
     val parentMapId = (parent as? EditableMapEntry)?.parentMap?.id
 
+    // 1. Добавляем сам узел
     result.add(
         UiNode(
             id = if (parent is EditableMapEntry) parent.id else node.id,
@@ -60,9 +60,10 @@ fun flattenTree(
             level = level,
             mapId = parentMapId,
             onDelete = { cmd.execute(RemoveNodeCommand(node)) }
-        ))
+        )
+    )
 
-    // 2. Add Children (Recursion)
+    // 2. Рекурсивно добавляем детей, если узел развернут
     if (node is EditableList && node.isExpanded) {
         node.items.forEachIndexed { index, child ->
             result.addAll(flattenTree(child, ListIndex(index), level + 1, cmd))
