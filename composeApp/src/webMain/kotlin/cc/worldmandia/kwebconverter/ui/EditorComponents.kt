@@ -69,7 +69,6 @@ fun NodeRow(
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
 
-    // Логика стиля для "места вставки" (плейсхолдера)
     val targetModifier = if (isDragging) {
         Modifier
             .background(MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.3f), RoundedCornerShape(8.dp))

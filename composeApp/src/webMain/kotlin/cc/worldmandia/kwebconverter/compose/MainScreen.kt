@@ -25,7 +25,6 @@ import io.github.vinceglb.filekit.dialogs.FileKitMode
 import io.github.vinceglb.filekit.dialogs.FileKitPickerState
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
-import io.github.vinceglb.filekit.name
 import kotlinx.coroutines.launch
 
 val MainFont = FontFamily.Monospace
@@ -44,8 +43,8 @@ fun MainScreen(filesViewModel: FilesViewModel, changePage: (NavKey) -> Unit) {
         when (state) {
             is FileKitPickerState.Started -> println("Loading...")
             is FileKitPickerState.Completed -> {
-                filesViewModel.loadFile(state.result)
-                filesViewModel.loadFilesContent()
+                filesViewModel.loadFilesWithContent(state.result)
+                filesViewModel.restoreDraftsIfAny()
             }
 
             else -> {}
@@ -93,9 +92,9 @@ fun MainScreen(filesViewModel: FilesViewModel, changePage: (NavKey) -> Unit) {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    items(files, key = { it.originalFile.name }) { fileData ->
+                    items(files, key = { it.fileData.nameWithExtension }) { file ->
                         Card(
-                            onClick = { changePage(FileEditorRoute(fileData)) },
+                            onClick = { changePage(FileEditorRoute(file)) },
                             colors = CardDefaults.cardColors(
                                 containerColor = MaterialTheme.colorScheme.surfaceContainer
                             ),
@@ -116,13 +115,13 @@ fun MainScreen(filesViewModel: FilesViewModel, changePage: (NavKey) -> Unit) {
 
                                 Column(Modifier.weight(1f)) {
                                     Text(
-                                        fileData.originalFile.name,
+                                        file.fileData.nameWithExtension,
                                         style = MaterialTheme.typography.titleMedium,
                                         fontFamily = MainFont,
                                         fontWeight = FontWeight.SemiBold
                                     )
                                     Text(
-                                        fileData.parserType.name,
+                                        file.parserType.name,
                                         style = MaterialTheme.typography.bodySmall,
                                         fontFamily = MainFont,
                                         color = MaterialTheme.colorScheme.outline
@@ -131,7 +130,7 @@ fun MainScreen(filesViewModel: FilesViewModel, changePage: (NavKey) -> Unit) {
 
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     IconButton(onClick = {
-                                        scope.launch { fileData.saveToUser() }
+                                        scope.launch { file.saveToUser() }
                                     }) {
                                         Icon(
                                             Icons.Rounded.Download,
@@ -141,7 +140,7 @@ fun MainScreen(filesViewModel: FilesViewModel, changePage: (NavKey) -> Unit) {
                                     }
 
                                     FilledTonalButton(
-                                        onClick = { changePage(FileEditorRoute(fileData)) }
+                                        onClick = { changePage(FileEditorRoute(file)) }
                                     ) {
                                         Icon(Icons.Default.Edit, null, modifier = Modifier.size(16.dp))
                                         Spacer(Modifier.width(8.dp))

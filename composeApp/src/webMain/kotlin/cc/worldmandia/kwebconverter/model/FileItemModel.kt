@@ -2,30 +2,40 @@ package cc.worldmandia.kwebconverter.model
 
 import cc.worldmandia.kwebconverter.ParserType
 import cc.worldmandia.kwebconverter.viewmodel.FilesViewModel
-import io.github.vinceglb.filekit.FileKit
-import io.github.vinceglb.filekit.PlatformFile
-import io.github.vinceglb.filekit.download
-import io.github.vinceglb.filekit.name
+import io.github.vinceglb.filekit.*
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class FileItemModel(
-    val originalFile: PlatformFile,
-    val cachedOriginalContent: String? = null,
+    val fileData: FileDataModel,
+    val cachedOriginalContent: String,
     var cachedEditedContent: String? = cachedOriginalContent,
     val parserType: ParserType
 ) {
+    constructor(originalFile: PlatformFile, parserType: ParserType, cachedOriginalContent: String) : this(
+        fileData = FileDataModel(originalFile.nameWithoutExtension, originalFile.extension),
+        parserType = parserType,
+        cachedOriginalContent = cachedOriginalContent
+    )
+
     fun resetCache() {
         cachedEditedContent = cachedOriginalContent
-        FilesViewModel.clearDraft(originalFile.name)
+        FilesViewModel.clearDraft(fileData.nameWithExtension)
     }
 
     suspend fun saveToUser() {
         FileKit.download(
             (cachedEditedContent
-                ?: cachedOriginalContent ?: "Content is null").encodeToByteArray(),
-            originalFile.name
+                ?: cachedOriginalContent).encodeToByteArray(),
+            fileData.nameWithExtension
         )
     }
 
 }
+
+@Serializable
+data class FileDataModel(
+    var fileName: String,
+    val extension: String,
+    val nameWithExtension: String = "$fileName.$extension",
+)

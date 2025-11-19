@@ -25,7 +25,6 @@ import com.mohamedrejeb.compose.dnd.drag.DropStrategy
 import com.mohamedrejeb.compose.dnd.reorder.ReorderContainer
 import com.mohamedrejeb.compose.dnd.reorder.ReorderableItem
 import com.mohamedrejeb.compose.dnd.reorder.rememberReorderState
-import io.github.vinceglb.filekit.name
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -94,7 +93,7 @@ fun FileEditorScreen(
     LaunchedEffect(currentContent) {
         if (currentContent != null) {
             delay(1000)
-            FilesViewModel.saveDraft(file.originalFile.name, currentContent)
+            FilesViewModel.saveDraft(file.fileData.nameWithExtension, currentContent)
         }
     }
 
@@ -136,7 +135,7 @@ fun FileEditorScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             EditorTopBar(
-                title = file.originalFile.name,
+                title = file.fileData.nameWithExtension,
                 type = file.parserType,
                 searchQuery = searchQuery,
                 onSearchChange = { searchQuery = it },
@@ -231,7 +230,6 @@ fun FileEditorScreen(
                                             .wrapContentHeight(unbounded = true, align = Alignment.Top)
                                     ) {
                                         Column(Modifier.padding(8.dp)) {
-                                            // 1. Заголовок самого контейнера (Ваше предыдущее исправление isDragging = false)
                                             NodeRow(
                                                 item = item,
                                                 isDuplicate = false,
@@ -240,10 +238,8 @@ fun FileEditorScreen(
                                                 onFocus = {}
                                             )
 
-                                            // 2. Визуализация дочерних элементов (ВМЕСТО текстовой заглушки)
                                             if (isContainer) {
                                                 val node = item.node
-                                                // Проверяем, развернут ли узел, чтобы превью соответствовало виду в списке
                                                 val isExpanded = (node as? EditableList)?.isExpanded == true ||
                                                         (node as? EditableMap)?.isExpanded == true
 
@@ -253,17 +249,16 @@ fun FileEditorScreen(
                                                         color = MaterialTheme.colorScheme.outlineVariant
                                                     )
 
-                                                    // Берем первые 5 элементов для предпросмотра, чтобы не перегружать рендеринг
                                                     val previewLimit = 5
                                                     val (children, totalCount) = when (node) {
                                                         is EditableList -> {
                                                             val items = node.items
                                                             items.take(previewLimit).mapIndexed { index, child ->
                                                                 UiNode(
-                                                                    id = "${item.id}_preview_$index", // Временный ID
+                                                                    id = "${item.id}_preview_$index",
                                                                     node = child,
                                                                     keyInfo = ListIndex(index),
-                                                                    level = item.level + 1, // Увеличиваем уровень вложенности
+                                                                    level = item.level + 1,
                                                                     onDelete = {}
                                                                 )
                                                             } to items.size
@@ -283,7 +278,6 @@ fun FileEditorScreen(
                                                         }
                                                     }
 
-                                                    // Рендерим детей
                                                     children.forEach { childUi ->
                                                         NodeRow(
                                                             item = childUi,
@@ -294,10 +288,9 @@ fun FileEditorScreen(
                                                         )
                                                     }
 
-                                                    // Если элементов больше лимита, показываем аккуратную подпись
                                                     if (totalCount > previewLimit) {
                                                         val indentDp =
-                                                            ((item.level + 1) * 20).dp // Примерный отступ, соответствующий IndentationGuides
+                                                            ((item.level + 1) * 20).dp
                                                         Text(
                                                             text = "... еще ${totalCount - previewLimit} ...",
                                                             style = MaterialTheme.typography.labelSmall,

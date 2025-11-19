@@ -15,7 +15,6 @@ sealed class ParseResult {
 object FileParser {
     fun parseFile(file: FileItemModel): ParseResult {
         val content = file.cachedEditedContent ?: file.cachedOriginalContent
-        ?: return ParseResult.Error("File not found or cant read")
         return try {
             val rootNode = when (file.parserType) {
                 ParserType.YAML -> YAMLConfigured.parseToYamlNode(content).toEditableNode(null)

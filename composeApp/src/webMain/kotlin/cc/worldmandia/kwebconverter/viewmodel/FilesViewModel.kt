@@ -13,24 +13,21 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import web.storage.localStorage
 
+// TODO restore files from drafts
 class FilesViewModel : ViewModel() {
 
     private val _files = MutableStateFlow<List<FileItemModel>>(emptyList())
     val files = _files.asStateFlow()
 
     fun loadFile(file: PlatformFile) {
-        _files.update { currentList ->
-            currentList + FileItemModel(file, parserType = file.parserType())
+        viewModelScope.launch {
+            _files.update { currentList ->
+                currentList + FileItemModel(file, parserType = file.parserType(), file.readString())
+            }
         }
     }
 
-    fun loadFile(files: List<PlatformFile>) {
-        _files.update { currentList ->
-            currentList + files.map { FileItemModel(it, parserType = it.parserType()) }
-        }
-    }
-
-    fun removeString(index: Int) {
+    fun removeFileById(index: Int) {
         _files.update { currentList ->
             if (index in currentList.indices) {
                 currentList.toMutableList().apply { removeAt(index) }
@@ -40,21 +37,14 @@ class FilesViewModel : ViewModel() {
         }
     }
 
-    fun loadFilesContent() {
+    fun loadFilesWithContent(files: List<PlatformFile>) {
         viewModelScope.launch {
-            val currentFiles = _files.value
-
-            val updatedFiles = currentFiles.map { file ->
-                if (file.cachedOriginalContent == null) {
-                    try {
-                        val content = file.originalFile.readString()
-                        file.copy(cachedOriginalContent = content)
-                    } catch (e: Exception) {
-                        println("Error reading file ${file.originalFile.name}: $e")
-                        file
-                    }
-                } else {
-                    file
+            val updatedFiles = files.mapNotNull { file ->
+                try {
+                    FileItemModel(file, parserType = file.parserType(), file.readString())
+                } catch (e: Exception) {
+                    println("Error reading file ${file.name}: $e")
+                    null
                 }
             }
 
@@ -79,7 +69,7 @@ class FilesViewModel : ViewModel() {
     fun restoreDraftsIfAny() {
         _files.update { currentList ->
             currentList.map { fileModel ->
-                val draft = checkDraft(fileModel.originalFile.name)
+                val draft = checkDraft(fileModel.fileData.nameWithExtension)
                 if (draft != null) {
                     fileModel.copy(cachedEditedContent = draft)
                 } else {
