@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cc.worldmandia.kwebconverter.core.OrbitCamera
@@ -67,9 +68,9 @@ fun DashboardScreen(
                     //Column(modifier = Modifier.width(400.dp).height(400.dp).align(Alignment.CenterStart)) {
                     //    GltfExample()
                     //}
-                    //Column(modifier = Modifier.width(400.dp).height(400.dp).align(Alignment.CenterEnd)) {
-                    //    ObjFileExample()
-                    //}
+                    Column(modifier = Modifier.width(400.dp).height(400.dp).align(Alignment.CenterEnd)) {
+                        ObjFileExample(MaterialTheme.colorScheme.surface)
+                    }
                 }
             } else {
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -114,12 +115,14 @@ fun GltfExample() = Korender(appResourceLoader = { Res.readBytes(it) }) {
 }
 
 @Composable
-fun ObjFileExample() {
+fun ObjFileExample(surface: Color) {
     Korender(appResourceLoader = { Res.readBytes(it) }) {
         val orbitCamera = OrbitCamera(this, 20.z, 0.z)
         OnTouch { orbitCamera.touch(it) }
         Frame {
-            background = ColorRGBA.Transparent
+            background = with(surface) {
+                ColorRGBA(red, green, blue, 1f)
+            }
             DirectionalLight(Vec3(1.0f, -1.0f, -1.0f), white(3f))
             camera = orbitCamera.camera(projection, width, height)
             Renderable(

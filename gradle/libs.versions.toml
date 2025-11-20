@@ -12,6 +12,7 @@ filekit = "0.12.0"
 koin-bom = "4.2.0-alpha2"
 compose-dnd = "0.4.0"
 compose-korender = "0.5.1-SNAPSHOT"
+composePwa = "0.4.1"
 
 [libraries]
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
@@ -48,3 +49,4 @@ composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMul
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+composePwa = { id = "dev.yuyuyuyuyu.composepwa", version.ref = "composePwa" }
