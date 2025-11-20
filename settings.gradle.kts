@@ -16,8 +16,14 @@ pluginManagement {
     }
 }
 
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
+
 dependencyResolutionManagement {
     repositories {
+        maven("https://repo.worldmandia.cc/snapshots")
+        mavenLocal()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
         google {
             mavenContent {
