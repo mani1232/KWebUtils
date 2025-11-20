@@ -8,10 +8,10 @@ plugins {
 }
 
 kotlin {
-    js {
-        browser()
-        binaries.executable()
-    }
+    //js {
+    //    browser()
+    //    binaries.executable()
+    //}
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
@@ -49,6 +49,7 @@ kotlin {
             implementation(libs.serialization.yaml)
 
             implementation(libs.compose.dnd)
+            implementation(libs.compose.korender)
 
             implementation(libs.filekit.core)
             implementation(libs.filekit.dialogs)

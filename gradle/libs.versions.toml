@@ -11,6 +11,7 @@ kaml = "0.104.0"
 filekit = "0.12.0"
 koin-bom = "4.2.0-alpha2"
 compose-dnd = "0.4.0"
+compose-korender = "0.5.1-SNAPSHOT"
 
 [libraries]
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
@@ -36,6 +37,7 @@ androidx-material3-adaptive-nav3 = { module = "org.jetbrains.compose.material3.a
 androidx-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "androidx-material3" }
 
 compose-dnd = { module = "com.mohamedrejeb.dnd:compose-dnd", version.ref = "compose-dnd" }
+compose-korender = { module = "com.github.zakgof:korender", version.ref = "compose-korender" }
 
 filekit-core = { module = "io.github.vinceglb:filekit-core", version.ref = "filekit" }
 filekit-dialogs = { module = "io.github.vinceglb:filekit-dialogs", version.ref = "filekit" }

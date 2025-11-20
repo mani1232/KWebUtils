@@ -14,11 +14,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import cc.worldmandia.kwebconverter.core.OrbitCamera
 import cc.worldmandia.kwebconverter.domain.model.ProjectFile
 import cc.worldmandia.kwebconverter.presentation.common.MainFont
+import com.zakgof.korender.Korender
+import com.zakgof.korender.math.ColorRGB.Companion.white
+import com.zakgof.korender.math.ColorRGBA
+import com.zakgof.korender.math.FloatMath.PIdiv2
+import com.zakgof.korender.math.Transform.Companion.scale
+import com.zakgof.korender.math.Vec3
+import com.zakgof.korender.math.y
+import com.zakgof.korender.math.z
 import io.github.vinceglb.filekit.dialogs.FileKitMode
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
+import kwebconverter.composeapp.generated.resources.Res
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -54,6 +64,12 @@ fun DashboardScreen(
             if (files.isEmpty()) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text("No open files.\nClick + to start.", fontFamily = MainFont)
+                    //Column(modifier = Modifier.width(400.dp).height(400.dp).align(Alignment.CenterStart)) {
+                    //    GltfExample()
+                    //}
+                    //Column(modifier = Modifier.width(400.dp).height(400.dp).align(Alignment.CenterEnd)) {
+                    //    ObjFileExample()
+                    //}
                 }
             } else {
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -80,6 +96,40 @@ fun FileCard(file: ProjectFile, onClick: () -> Unit) {
                 Icon(Icons.Default.Edit, null, Modifier.size(16.dp))
                 Text("Edit", Modifier.padding(start = 8.dp))
             }
+        }
+    }
+}
+
+@Composable
+fun GltfExample() = Korender(appResourceLoader = { Res.readBytes(it) }) {
+    val orbitCamera = OrbitCamera(this, 20.z, 3.y)
+    OnTouch { orbitCamera.touch(it) }
+    Frame {
+        background = ColorRGBA.Transparent
+        camera = orbitCamera.camera(projection, width, height)
+        DirectionalLight(Vec3(1.0f, -1.0f, -1.0f), white(3f))
+        AmbientLight(white(0.6f))
+        Gltf(resource = "model/swat.glb", transform = scale(0.03f).rotate(1.y, frameInfo.time))
+    }
+}
+
+@Composable
+fun ObjFileExample() {
+    Korender(appResourceLoader = { Res.readBytes(it) }) {
+        val orbitCamera = OrbitCamera(this, 20.z, 0.z)
+        OnTouch { orbitCamera.touch(it) }
+        Frame {
+            background = ColorRGBA.Transparent
+            DirectionalLight(Vec3(1.0f, -1.0f, -1.0f), white(3f))
+            camera = orbitCamera.camera(projection, width, height)
+            Renderable(
+                base(colorTexture = texture("model/head.jpg"), metallicFactor = 0.3f, roughnessFactor = 0.5f),
+                mesh = obj("model/head.obj"),
+                transform = scale(7.0f).rotate(1.y, -PIdiv2),
+            )
+            DirectionalLight(Vec3(1.0f, -1.0f, -1.0f), white(3f))
+            AmbientLight(white(0.6f))
+            Gltf(resource = "model/swat.glb", transform = scale(0.03f).rotate(1.y, frameInfo.time))
         }
     }
 }
