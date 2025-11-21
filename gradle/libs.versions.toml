@@ -14,6 +14,8 @@ compose-dnd = "0.4.0"
 compose-korender = "0.5.1-SNAPSHOT"
 composePwa = "0.4.2"
 compose-haze = "1.7.0"
+composeIcons = "1.7.3"
+agp = "9.0.0-beta01"
 
 [libraries]
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
@@ -38,6 +40,14 @@ androidx-material3-adaptive = { module = "org.jetbrains.compose.material3.adapti
 androidx-material3-adaptive-nav3 = { module = "org.jetbrains.compose.material3.adaptive:adaptive-navigation3", version.ref = "androidx-adaptive" }
 androidx-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "androidx-material3" }
 
+compose-runtime = { group = "org.jetbrains.compose.runtime", name = "runtime", version.ref = "composeMultiplatform" }
+compose-foundation = { group = "org.jetbrains.compose.foundation", name = "foundation", version.ref = "composeMultiplatform" }
+compose-ui = { group = "org.jetbrains.compose.ui", name = "ui", version.ref = "composeMultiplatform" }
+compose-ui-tooling = { group = "org.jetbrains.compose.ui-tooling", name = "ui", version.ref = "composeMultiplatform" }
+compose-ui-tooling-preview = { group = "org.jetbrains.compose.ui", name = "ui-tooling-preview", version.ref = "composeMultiplatform" }
+compose-components-resources = { group = "org.jetbrains.compose.components", name = "components-resources", version.ref = "composeMultiplatform" }
+compose-material-icons-extended = { group = "org.jetbrains.compose.material", name = "material-icons-extended", version.ref = "composeIcons" }
+
 compose-dnd = { module = "com.mohamedrejeb.dnd:compose-dnd", version.ref = "compose-dnd" }
 compose-korender = { module = "com.github.zakgof:korender", version.ref = "compose-korender" }
 compose-haze = { module = "dev.chrisbanes.haze:haze", version.ref = "compose-haze" }
@@ -47,9 +57,19 @@ filekit-core = { module = "io.github.vinceglb:filekit-core", version.ref = "file
 filekit-dialogs = { module = "io.github.vinceglb:filekit-dialogs", version.ref = "filekit" }
 filekit-dialogs-compose = { module = "io.github.vinceglb:filekit-dialogs-compose", version.ref = "filekit" }
 
+[bundles]
+compose-common = [
+    "compose-runtime",
+    "compose-foundation",
+    "compose-ui",
+    "compose-components-resources",
+    "compose-ui-tooling-preview"
+]
+
 [plugins]
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+androidMultiplatform = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 composePwa = { id = "dev.yuyuyuyuyu.composepwa", version.ref = "composePwa" }

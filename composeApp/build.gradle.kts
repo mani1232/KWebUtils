@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.androidMultiplatform)
     //alias(libs.plugins.composePwa)
 }
 
@@ -14,20 +15,34 @@ kotlin {
     //    binaries.executable()
     //}
 
+    compilerOptions {
+        freeCompilerArgs.addAll("-Xexpect-actual-classes")
+    }
+
+    androidLibrary {
+        namespace = group.toString()
+        compileSdk { version = preview("36.1") }
+        androidResources.enable = true
+    }
+
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         browser()
         binaries.executable()
     }
 
+    applyDefaultHierarchyTemplate()
+
     sourceSets {
+        androidMain.dependencies {
+            implementation(libs.compose.ui.tooling.preview)
+            implementation(libs.compose.ui)
+            implementation(libs.compose.ui.tooling)
+        }
+
         commonMain.dependencies {
-            implementation("org.jetbrains.compose.runtime:runtime:1.10.10-alpha01+dev3301")
-            implementation("org.jetbrains.compose.foundation:foundation:1.10.10-alpha01+dev3301")
-            implementation("org.jetbrains.compose.ui:ui:1.10.10-alpha01+dev3301")
-            implementation("org.jetbrains.compose.material:material-icons-extended:1.7.3")
-            implementation("org.jetbrains.compose.components:components-resources:1.10.10-alpha01+dev3301")
-            implementation("org.jetbrains.compose.ui:ui-tooling-preview:1.10.10-alpha01+dev3301")
+            implementation(libs.bundles.compose.common)
+            implementation(libs.compose.material.icons.extended)
 
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime)
@@ -44,8 +59,6 @@ kotlin {
             implementation(libs.koin.compose.viewmodel.navigation)
             implementation(libs.koin.compose.viewmodel.navigation3)
 
-            implementation(kotlinWrappers.browser)
-
             implementation(libs.serialization.json5)
             implementation(libs.serialization.yaml)
 
@@ -61,7 +74,13 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
+
+        webMain.dependencies {
+            implementation(kotlinWrappers.browser)
+        }
     }
 }
 
-
+compose.resources {
+    publicResClass = true
+}

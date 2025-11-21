@@ -6,4 +6,5 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.kotlinSerialization) apply false
     alias(libs.plugins.composePwa) apply false
+    alias(libs.plugins.androidMultiplatform) apply false
 }

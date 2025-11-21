@@ -17,7 +17,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draganddrop.DragAndDropEvent
 import androidx.compose.ui.draganddrop.DragAndDropTarget
-import androidx.compose.ui.draganddrop.domDataTransferOrNull
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,13 +41,10 @@ import io.github.vinceglb.filekit.dialogs.FileKitMode
 import io.github.vinceglb.filekit.dialogs.FileKitPickerState
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
-import js.core.JsPrimitives.toKotlinString
 import kwebconverter.composeapp.generated.resources.Res
-import org.w3c.files.FileReader
-import org.w3c.files.get
 
 @OptIn(
-    ExperimentalMaterial3ExpressiveApi::class, ExperimentalComposeUiApi::class, ExperimentalWasmJsInterop::class,
+    ExperimentalMaterial3ExpressiveApi::class, ExperimentalComposeUiApi::class,
     ExperimentalHazeMaterialsApi::class
 )
 @Composable
@@ -74,31 +70,7 @@ fun DashboardScreen(
     val callback = remember {
         object : DragAndDropTarget {
             override fun onDrop(event: DragAndDropEvent): Boolean {
-                val clipData = event.transferData?.domDataTransferOrNull ?: return false
-                if (clipData.files.length > 0) {
-                    for (i in 0..clipData.items.length) {
-                        clipData.files[i]?.let { file ->
-                            FileReader().apply {
-                                onloadend = { _ ->
-                                    file.name.split(".").let {
-                                        viewModel.onFilesSelected(
-                                            ProjectFile(
-                                                name = it[0],
-                                                extension = it[1],
-                                                content = (result as JsString?)?.toKotlinString() ?: "[]",
-                                            )
-                                        )
-                                    }
-                                }
-                                onerror = { event ->
-                                    println(event.type)
-                                }
-                            }.readAsText(file)
-                        } ?: println("Warning: Failed to load file ${clipData.files[i]?.name ?: "$i not found"}")
-                    }
-                    return true
-                }
-                return false
+                return onDropDragAndDropEvent(viewModel).invoke(event)
             }
 
             override fun onStarted(event: DragAndDropEvent) {
@@ -128,12 +100,7 @@ fun DashboardScreen(
             )
         },
         modifier = Modifier.fillMaxSize().dragAndDropTarget(
-            shouldStartDragAndDrop = { event ->
-                (event.transferData?.domDataTransferOrNull)?.also {
-                    it.dropEffect = "copy"
-                    it.effectAllowed = "all"
-                } != null
-            },
+            shouldStartDragAndDrop = onDragAndDropEvent(),
             target = callback
         )
     ) { padding ->
@@ -175,6 +142,11 @@ fun DashboardScreen(
 
 @Composable
 @Preview
+fun TestPreview() {
+    FileUploadCard()
+}
+
+@Composable
 fun FileUploadCard(modifier: Modifier = Modifier) {
     Card(modifier = modifier) {
         Column(Modifier.padding(16.dp)) {
@@ -243,3 +215,6 @@ fun ObjFileExample(surface: Color) {
         }
     }
 }
+
+expect fun onDragAndDropEvent(): (DragAndDropEvent) -> Boolean
+expect fun onDropDragAndDropEvent(viewModel: DashboardViewModel): (DragAndDropEvent) -> Boolean
