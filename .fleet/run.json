@@ -1,0 +1,13 @@
+{
+    "configurations": [
+
+        {
+            "type": "gradle",
+            "name": "gradle build",
+            "tasks": ["build"],
+            "environment": {
+                "CHROME_BIN": "C:/Program Files/Google/Chrome Dev/Application/chrome.exe"
+            }
+        }
+    ]
+}

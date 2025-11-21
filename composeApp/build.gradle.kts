@@ -19,7 +19,7 @@ kotlin {
         freeCompilerArgs.addAll("-Xexpect-actual-classes")
     }
 
-    androidLibrary {
+    android {
         namespace = "cc.worldmandia.kwebconverter"
         compileSdk { version = preview("36.1") }
         androidResources.enable = true
@@ -28,8 +28,15 @@ kotlin {
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        browser()
+        browser {
+            testTask {
+                useKarma {
+                    useChrome()
+                }
+            }
+        }
         binaries.executable()
+
     }
 
     applyDefaultHierarchyTemplate()

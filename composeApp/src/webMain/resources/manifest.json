@@ -4,8 +4,23 @@
     "theme_color": "#FFFBFE",
     "background_color": "#FFFBFE",
     "display": "standalone",
+    "orientation": "any",
     "scope": "./",
     "start_url": "./",
+    "screenshots": [
+        {
+            "src": "icons/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "form_factor": "narrow"
+        },
+        {
+            "src": "icons/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "form_factor": "wide"
+        }
+    ],
     "icons": [
         {
             "src": "icons/icon-72x72.png",
