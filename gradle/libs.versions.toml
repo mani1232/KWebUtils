@@ -16,6 +16,7 @@ composePwa = "0.4.2"
 compose-haze = "1.7.0"
 composeIcons = "1.7.3"
 agp = "9.0.0-beta02"
+ksp = "2.3.3"
 
 [libraries]
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
@@ -72,3 +73,4 @@ androidMultiplatform = { id = "com.android.kotlin.multiplatform.library", versio
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 composePwa = { id = "dev.yuyuyuyuyu.composepwa", version.ref = "composePwa" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

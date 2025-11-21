@@ -1,3 +1,4 @@
+import com.google.devtools.ksp.KspExperimental
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
@@ -6,6 +7,7 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.androidMultiplatform)
+    alias(libs.plugins.ksp)
     //alias(libs.plugins.composePwa)
 }
 
@@ -90,4 +92,9 @@ kotlin {
 
 compose.resources {
     publicResClass = true
+}
+
+ksp {
+    @OptIn(KspExperimental::class)
+    useKsp2 = true
 }
