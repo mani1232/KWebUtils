@@ -113,9 +113,9 @@ fun DashboardScreen(
             if (files.isEmpty()) {
                 Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                     Text("No open files.\nClick + to start.", fontFamily = MainFont)
-                    //Column(modifier = Modifier.width(400.dp).height(400.dp).align(Alignment.CenterStart)) {
-                    //    GltfExample()
-                    //}
+                    Column(modifier = Modifier.width(400.dp).height(400.dp).align(Alignment.CenterStart)) {
+                        GltfExample(MaterialTheme.colorScheme.surface)
+                    }
                     //Column(modifier = Modifier.width(400.dp).height(400.dp).align(Alignment.CenterEnd)) {
                     //    ObjFileExample(MaterialTheme.colorScheme.surface)
                     //}
@@ -185,17 +185,25 @@ fun FileCard(file: ProjectFile, onClick: () -> Unit) {
 }
 
 @Composable
-fun GltfExample() = Korender(appResourceLoader = { Res.readBytes(it) }) {
+fun GltfExample(surface: Color) = Korender(appResourceLoader = { Res.readBytes(it) }) {
     val orbitCamera = OrbitCamera(this, 20.z, 3.y)
     OnTouch { orbitCamera.touch(it) }
     Frame {
-        background = ColorRGBA.Transparent
+        base(Color.Green.toRGBA())
+        background = with(surface) {
+            ColorRGBA(red, green, blue, 1f)
+        }
         camera = orbitCamera.camera(projection, width, height)
         DirectionalLight(Vec3(1.0f, -1.0f, -1.0f), white(3f))
         AmbientLight(white(0.6f))
-        Gltf(resource = "model/swat.glb", transform = scale(0.03f).rotate(1.y, frameInfo.time))
+        Gltf(
+            resource = "models/dress.glb",
+            //transform = scale(0.03f).rotate(1.y, frameInfo.time)
+        )
     }
 }
+
+private fun Color.toRGBA(a: Float = 1f) = ColorRGBA(red, green, blue, a)
 
 @Composable
 fun ObjFileExample(surface: Color) {
@@ -209,13 +217,10 @@ fun ObjFileExample(surface: Color) {
             DirectionalLight(Vec3(1.0f, -1.0f, -1.0f), white(3f))
             camera = orbitCamera.camera(projection, width, height)
             Renderable(
-                base(colorTexture = texture("model/head.jpg"), metallicFactor = 0.3f, roughnessFactor = 0.5f),
-                mesh = obj("model/head.obj"),
+                base(colorTexture = texture("models/head.jpg"), metallicFactor = 0.3f, roughnessFactor = 0.5f),
+                mesh = obj("models/head.obj"),
                 transform = scale(7.0f).rotate(1.y, -PIdiv2),
             )
-            DirectionalLight(Vec3(1.0f, -1.0f, -1.0f), white(3f))
-            AmbientLight(white(0.6f))
-            Gltf(resource = "model/swat.glb", transform = scale(0.03f).rotate(1.y, frameInfo.time))
         }
     }
 }
