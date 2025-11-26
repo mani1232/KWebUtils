@@ -24,7 +24,7 @@ tasks.register("publishWebHub") {
         if (wwwDir.exists()) wwwDir.deleteRecursively()
         wwwDir.mkdirs()
 
-        println("📂 Сборка сайта в: ${wwwDir.absolutePath}")
+        println("📂 Assembling site in: ${wwwDir.absolutePath}")
 
         val menuDist = project(":$menuApp").layout.buildDirectory
             .dir("dist/js/productionExecutable").get().asFile
@@ -34,9 +34,9 @@ tasks.register("publishWebHub") {
                 from(menuDist)
                 into(wwwDir)
             }
-            println("✅ Меню (index.html) скопировано в корень.")
+            println("✅ Menu (index.html) copied to root.")
         } else {
-            error("❌ Не найдена сборка меню! Проверьте путь: ${menuDist.path}")
+            error("❌ Menu build not found! Check path: ${menuDist.path}")
         }
 
         wasmApps.forEach { appName ->
@@ -50,12 +50,12 @@ tasks.register("publishWebHub") {
                     from(appDist)
                     into(targetDir)
                 }
-                println("✅ Приложение $appName скопировано в /$appName")
+                println("✅ App $appName copied to /$appName")
             } else {
-                println("⚠️ Сборка для $appName не найдена.")
+                println("⚠️ Build for $appName not found.")
             }
         }
 
-        println("🏁 Готово! Запустите сервер в папке build/www")
+        println("🏁 Done! Start server in build/www folder")
     }
 }
