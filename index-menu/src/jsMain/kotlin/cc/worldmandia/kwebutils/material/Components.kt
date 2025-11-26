@@ -7,6 +7,7 @@ import mui.material.Box
 import mui.material.Button
 import mui.material.ButtonColor
 import mui.material.ButtonVariant
+import mui.material.Typography
 import mui.material.styles.Theme
 import react.FC
 import react.Props
@@ -58,4 +59,21 @@ val LaunchButton = FC<LaunchButtonProps> { props ->
         }
         +props.appName
     }
+}
+
+val DescriptionText = Typography.styled { props ->
+    val theme = props.asDynamic().theme.unsafeCast<Theme>()
+
+    color = theme.palette.text.secondary
+
+    fontSize = 1.2.rem
+    lineHeight = 1.5.em
+
+    marginTop = 0.px
+    marginBottom = 40.px
+
+    maxWidth = 600.px
+
+    marginLeft = Auto.auto
+    marginRight = Auto.auto
 }

@@ -1,11 +1,13 @@
 package cc.worldmandia.kwebutils.theme
 
 import js.objects.unsafeJso
+import kotlinx.browser.localStorage
 import mui.material.CssBaseline
 import mui.material.PaletteMode
 import mui.material.styles.Theme
 import mui.material.styles.ThemeProvider
 import mui.material.styles.createTheme
+import mui.system.useMediaQuery
 import react.*
 
 val LightTheme = createTheme(unsafeJso {
@@ -18,20 +20,47 @@ val DarkTheme = createTheme(unsafeJso {
 
 data class ThemeContextType(
     val theme: Theme,
-    val toggleTheme: () -> Unit
+    val toggleTheme: () -> Unit,
+    val isAuto: Boolean
 )
 
 val ThemeContext = createContext<ThemeContextType>()
 
 val ThemeModule = FC<PropsWithChildren> { props ->
-    var isDark by useState(false)
+    val systemPrefersDark = useMediaQuery("(prefers-color-scheme: dark)")
 
-    val currentTheme = if (isDark) DarkTheme else LightTheme
+    var userPrefersDark by useState {
+        val savedTheme = localStorage.getItem("app_theme_pref")
+        when (savedTheme) {
+            "dark" -> true
+            "light" -> false
+            else -> null
+        }
+    }
 
-    val contextValue = ThemeContextType(
-        theme = currentTheme,
-        toggleTheme = { isDark = !isDark }
-    )
+    useEffect(userPrefersDark) {
+        when (userPrefersDark) {
+            true -> localStorage.setItem("app_theme_pref", "dark")
+            false -> localStorage.setItem("app_theme_pref", "light")
+            null -> localStorage.removeItem("app_theme_pref")
+        }
+    }
+
+    val isDark = userPrefersDark ?: systemPrefersDark
+
+    val currentTheme = useMemo(isDark) {
+        if (isDark) DarkTheme else LightTheme
+    }
+
+    val contextValue = useMemo(isDark, userPrefersDark, systemPrefersDark) {
+        ThemeContextType(
+            theme = currentTheme,
+            toggleTheme = {
+                userPrefersDark = !isDark
+            },
+            isAuto = userPrefersDark == null
+        )
+    }
 
     ThemeContext.Provider(contextValue) {
         ThemeProvider {

@@ -1,5 +1,6 @@
 package cc.worldmandia.kwebutils
 
+import cc.worldmandia.kwebutils.material.DescriptionText
 import cc.worldmandia.kwebutils.material.LaunchButton
 import cc.worldmandia.kwebutils.material.PageContainer
 import cc.worldmandia.kwebutils.theme.ThemeModule
@@ -62,7 +63,15 @@ object IndexMenuApp {
                     variant = TypographyVariant.h2
                     component = ReactHTML.h1
                     sx { marginBottom = 40.px; fontWeight = FontWeight.bold }
-                    +"Wasm Hub"
+                    +"KWebUtils"
+                }
+
+                DescriptionText {
+                    variant = TypographyVariant.body1
+
+                    +"Welcome to the demo showcase! "
+                    +"Here you can explore example applications written in Kotlin Multiplatform "
+                    +"and compiled to WebAssembly."
                 }
 
                 Stack {

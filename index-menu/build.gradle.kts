@@ -30,6 +30,7 @@ kotlin {
 
             implementation(kotlinWrappers.mui.material)
             implementation(kotlinWrappers.mui.iconsMaterial)
+            implementation(kotlinWrappers.mui.system)
         }
         webMain.dependencies {
             //implementation(libs.compose.runtime)
