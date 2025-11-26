@@ -52,12 +52,12 @@ jobs:
         run: java -version
 
       - name: Build with Gradle Wrapper
-        run: ./gradlew --no-daemon wasmJsBrowserDistribution
+        run: ./gradlew --no-daemon publishWebHub
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: composeApp/build/dist/wasmJs/productionExecutable/
+          path: build/www
 
   deploy:
     needs: build

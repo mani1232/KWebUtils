@@ -54,6 +54,9 @@ compose-ui-tooling-preview = { group = "org.jetbrains.compose.ui", name = "ui-to
 compose-components-resources = { group = "org.jetbrains.compose.components", name = "components-resources", version.ref = "composeMultiplatform" }
 compose-material-icons-extended = { group = "org.jetbrains.compose.material", name = "material-icons-extended", version.ref = "composeIcons" }
 
+compose-html = { module = "org.jetbrains.compose.html:html-core", version.ref = "composeMultiplatform" }
+compose-html-svg = { module = "org.jetbrains.compose.html:html-svg", version.ref = "composeMultiplatform" }
+
 compose-dnd = { module = "com.mohamedrejeb.dnd:compose-dnd", version.ref = "compose-dnd" }
 compose-korender = { module = "com.github.zakgof:korender", version.ref = "compose-korender" }
 compose-haze = { module = "dev.chrisbanes.haze:haze", version.ref = "compose-haze" }

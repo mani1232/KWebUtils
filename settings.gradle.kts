@@ -1,4 +1,4 @@
-rootProject.name = "KWebConverter"
+rootProject.name = "KWebUtils"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
@@ -45,5 +45,6 @@ dependencyResolutionManagement {
     }
 }
 
-include(":composeApp")
-include(":composeexample")
+include(":config-editor")
+//include(":composeexample") // Only for Android or maybe for non-web targets
+include("index-menu")
