@@ -22,7 +22,7 @@ class OrbitCamera(initialPosition: Vec3, private val targetPosition: Vec3 = Vec3
             val startDirection = (targetPosition - startPosition!!).normalize()
             val startRight = (startDirection % 1.y).normalize()
             val startUp = (startRight % startDirection).normalize()
-            val frustum =  projection
+            val frustum = projection
 
             position = startPosition!! +
                     startRight * (-deltaX / width * frustum.width * 8.0f) +

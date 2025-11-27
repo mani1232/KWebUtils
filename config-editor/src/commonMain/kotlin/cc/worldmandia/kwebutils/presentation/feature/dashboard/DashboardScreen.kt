@@ -218,7 +218,11 @@ fun TestChangeColor(surface: Color) {
             Gltf(
                 resource = "models/dress.glb",
                 materialOverrides = mapOf(
-                    "FABRIC_1_FRONT_1309" to base(color = ColorRGBA.Green, metallicFactor = 0.0f, roughnessFactor = 0.9f),
+                    "FABRIC_1_FRONT_1309" to base(
+                        color = ColorRGBA.Green,
+                        metallicFactor = 0.0f,
+                        roughnessFactor = 0.9f
+                    ),
                 ),
                 transform = scale(0.0025f).rotate(Vec3(1f, 0f, 0f), -1.57f).rotate(Vec3(0f, 1f, 0f), frameInfo.time),
             )

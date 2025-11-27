@@ -7,9 +7,9 @@ import io.ktor.plugin.features.DockerImageRegistry
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
-    alias(libs.plugins.ktor)
-    alias(libs.plugins.kotlinJvm)
-    alias(libs.plugins.kotlinSerialization)
+    alias(custom.plugins.ktor)
+    alias(custom.plugins.kotlinJvm)
+    alias(custom.plugins.kotlinSerialization)
     application
 }
 
@@ -72,7 +72,7 @@ ktor {
 kotlin {
     sourceSets.main {
         dependencies {
-            implementation(libs.bundles.backend)
+            implementation(custom.bundles.backend)
         }
     }
 }

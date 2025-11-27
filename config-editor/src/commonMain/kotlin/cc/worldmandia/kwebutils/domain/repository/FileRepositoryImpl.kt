@@ -11,9 +11,11 @@ class FileRepositoryImpl : IFileRepository {
     override suspend fun saveDraft(fileId: String, content: String) {
         settings[fileId] = content
     }
+
     override suspend fun getDraft(fileId: String): String? {
         return settings.get<String>(fileId)
     }
+
     override suspend fun clearDraft(fileId: String) {
         settings.remove(fileId)
     }

@@ -2,16 +2,17 @@ import cc.worldmandia.FrontEnd.MENU_APP
 import cc.worldmandia.FrontEnd.wasmApps
 
 plugins {
-    alias(libs.plugins.composeMultiplatform) apply false
-    alias(libs.plugins.composeCompiler) apply false
-    alias(libs.plugins.kotlinMultiplatform) apply false
-    alias(libs.plugins.kotlinSerialization) apply false
-    alias(libs.plugins.composePwa) apply false
-    alias(libs.plugins.androidMultiplatform) apply false
-    alias(libs.plugins.androidApplication) apply false
-    alias(libs.plugins.ksp) apply false
-    alias(libs.plugins.ktor) apply false
-    alias(libs.plugins.kotlinJvm) apply false
+    alias(custom.plugins.composeMultiplatform) apply false
+    alias(custom.plugins.composeCompiler) apply false
+    alias(custom.plugins.kotlinMultiplatform) apply false
+    alias(custom.plugins.kotlinSerialization) apply false
+    alias(custom.plugins.composePwa) apply false
+    alias(custom.plugins.androidMultiplatform) apply false
+    alias(custom.plugins.androidApplication) apply false
+    alias(custom.plugins.ksp) apply false
+    alias(custom.plugins.ktor) apply false
+    alias(custom.plugins.kotlinJvm) apply false
+    alias(custom.plugins.composeHotReload) apply false
 }
 
 tasks.register("publishKWebUtils") {

@@ -1,14 +1,16 @@
 import com.google.devtools.ksp.KspExperimental
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.composeMultiplatform)
-    alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.kotlinSerialization)
-    alias(libs.plugins.androidMultiplatform)
-    alias(libs.plugins.ksp)
-    //alias(libs.plugins.composePwa)
+    alias(custom.plugins.kotlinMultiplatform)
+    alias(custom.plugins.composeMultiplatform)
+    alias(custom.plugins.composeCompiler)
+    alias(custom.plugins.kotlinSerialization)
+    alias(custom.plugins.androidMultiplatform)
+    alias(custom.plugins.ksp)
+    alias(custom.plugins.composeHotReload)
+    //alias(custom.plugins.composePwa)
 }
 
 kotlin {
@@ -16,6 +18,11 @@ kotlin {
     //    browser()
     //    binaries.executable()
     //}
+    jvm("hotRunJvm") {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_21)
+        }
+    }
 
     compilerOptions {
         freeCompilerArgs.addAll("-Xexpect-actual-classes")
@@ -48,47 +55,47 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
-            implementation(libs.compose.ui.tooling.preview)
-            implementation(libs.compose.ui)
-            implementation(libs.androidx.material3)
-            implementation(libs.koin.android)
+            implementation(custom.compose.ui.tooling.preview)
+            implementation(custom.compose.ui)
+            implementation(custom.androidx.material3)
+            implementation(custom.koin.android)
         }
 
         commonMain.dependencies {
-            implementation(libs.bundles.compose.common)
-            implementation(libs.compose.material.icons.extended)
+            implementation(custom.bundles.compose.common)
+            implementation(custom.compose.material.icons.extended)
 
-            implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.androidx.lifecycle.runtime)
-            implementation(libs.androidx.material3)
-            implementation(libs.androidx.material3.adaptive)
-            implementation(libs.androidx.material3.adaptive.nav3)
-            implementation(libs.androidx.lifecycle.viewmodel.nav3)
-            implementation(libs.androidx.nav3.ui)
+            implementation(custom.androidx.lifecycle.viewmodel)
+            implementation(custom.androidx.lifecycle.runtime)
+            implementation(custom.androidx.material3)
+            implementation(custom.androidx.material3.adaptive)
+            implementation(custom.androidx.material3.adaptive.nav3)
+            implementation(custom.androidx.lifecycle.viewmodel.nav3)
+            implementation(custom.androidx.nav3.ui)
 
-            implementation(project.dependencies.platform(libs.koin.bom))
-            implementation(libs.koin.core)
-            implementation(libs.koin.compose)
-            implementation(libs.koin.compose.viewmodel)
-            implementation(libs.koin.compose.viewmodel.navigation)
-            implementation(libs.koin.compose.viewmodel.navigation3)
+            implementation(project.dependencies.platform(custom.koin.bom))
+            implementation(custom.koin.core)
+            implementation(custom.koin.compose)
+            implementation(custom.koin.compose.viewmodel)
+            implementation(custom.koin.compose.viewmodel.navigation)
+            implementation(custom.koin.compose.viewmodel.navigation3)
 
-            implementation(libs.serialization.json5)
-            implementation(libs.serialization.yaml)
+            implementation(custom.serialization.json5)
+            implementation(custom.serialization.yaml)
 
-            implementation(libs.compose.dnd)
-            implementation(libs.compose.korender)
-            implementation(libs.compose.haze)
-            implementation(libs.compose.haze.materials)
+            implementation(custom.compose.dnd)
+            implementation(custom.compose.korender)
+            implementation(custom.compose.haze)
+            implementation(custom.compose.haze.materials)
 
-            implementation(libs.multiplatformSettings)
+            implementation(custom.multiplatformSettings)
 
-            implementation(libs.filekit.core)
-            implementation(libs.filekit.dialogs)
-            implementation(libs.filekit.dialogs.compose)
+            implementation(custom.filekit.core)
+            implementation(custom.filekit.dialogs)
+            implementation(custom.filekit.dialogs.compose)
         }
         commonTest.dependencies {
-            implementation(libs.kotlin.test)
+            implementation(custom.kotlin.test)
         }
 
         webMain.dependencies {
@@ -98,8 +105,15 @@ kotlin {
     }
 }
 
-compose.resources {
-    publicResClass = true
+compose {
+    desktop {
+        application {
+            mainClass = "cc.worldmandia.kwebutils.MainKt"
+        }
+    }
+    resources {
+        publicResClass = true
+    }
 }
 
 ksp {

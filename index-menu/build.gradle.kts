@@ -1,10 +1,10 @@
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
-    //alias(libs.plugins.composeMultiplatform)
-    //alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.kotlinSerialization)
-    //alias(libs.plugins.ksp)
-    //alias(libs.plugins.composePwa)
+    alias(custom.plugins.kotlinMultiplatform)
+    //alias(custom.plugins.composeMultiplatform)
+    //alias(custom.plugins.composeCompiler)
+    alias(custom.plugins.kotlinSerialization)
+    //alias(custom.plugins.ksp)
+    //alias(custom.plugins.composePwa)
 }
 
 kotlin {
@@ -33,10 +33,10 @@ kotlin {
             implementation(kotlinWrappers.mui.system)
         }
         webMain.dependencies {
-            //implementation(libs.compose.runtime)
+            //implementation(custom.compose.runtime)
         }
         commonMain.dependencies {
-            //implementation(libs.compose.html)
+            //implementation(custom.compose.html)
         }
     }
 }

@@ -193,7 +193,9 @@ fun EditorTopBar(
                 IconButton(onClick = {
                     val content = onGenerateContent()
                     if (content != null) {
-                        scope.launch { clipboard.setPlainText(content) }
+                        scope.launch {
+                            clipboard.setPlainText(content)
+                        }
                     }
                 }) {
                     Icon(Icons.Default.ContentCopy, "Copy All")
