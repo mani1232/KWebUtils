@@ -1,5 +1,5 @@
 module.exports = {
-    globDirectory: "./backend/build/resources/main/static/config-editor/",
+    globDirectory: "build/dist/wasmJs/productionExecutable/",
     globPatterns: [
         "**/*.{html,js,css,wasm,png,jpg,ico,json}"
     ],
@@ -8,5 +8,5 @@ module.exports = {
         urlPattern: ({ request }) => request.destination === 'document' || request.destination === 'script' || request.destination === 'style' || request.destination === 'image',
         handler: "StaleWhileRevalidate",
     }],
-    swDest: "./backend/build/resources/main/static/config-editor/serviceWorker.js",
+    swDest: "build/dist/wasmJs/productionExecutable/serviceWorker.js",
 };
