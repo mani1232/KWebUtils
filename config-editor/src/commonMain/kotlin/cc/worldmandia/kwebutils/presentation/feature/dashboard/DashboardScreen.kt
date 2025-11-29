@@ -107,8 +107,10 @@ fun DashboardScreen(
         )
     ) { padding ->
         Column(Modifier.padding(padding).padding(16.dp).fillMaxSize().hazeSource(hazeState)) {
-            WebBackButton()
-            Text("Config Editor | Files", style = MaterialTheme.typography.headlineMedium, fontFamily = MainFont)
+            Row {
+                WebBackButton()
+                Text("Config Editor | Files", style = MaterialTheme.typography.headlineMedium, fontFamily = MainFont)
+            }
             Spacer(Modifier.height(16.dp))
 
             if (files.isEmpty()) {
