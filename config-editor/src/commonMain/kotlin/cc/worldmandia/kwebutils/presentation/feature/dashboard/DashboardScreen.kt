@@ -107,6 +107,7 @@ fun DashboardScreen(
         )
     ) { padding ->
         Column(Modifier.padding(padding).padding(16.dp).fillMaxSize().hazeSource(hazeState)) {
+            WebBackButton()
             Text("Config Editor | Files", style = MaterialTheme.typography.headlineMedium, fontFamily = MainFont)
             Spacer(Modifier.height(16.dp))
 
@@ -252,5 +253,7 @@ fun ObjFileExample(surface: Color) {
     }
 }
 
+@Composable
+expect fun WebBackButton()
 expect fun onDragAndDropEvent(): (DragAndDropEvent) -> Boolean
 expect fun onDropDragAndDropEvent(viewModel: DashboardViewModel): (DragAndDropEvent) -> Boolean

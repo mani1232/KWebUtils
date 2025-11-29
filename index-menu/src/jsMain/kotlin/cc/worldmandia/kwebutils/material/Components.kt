@@ -51,11 +51,24 @@ val LaunchButton = FC<LaunchButtonProps> { props ->
         size = mui.material.Size.large
         startIcon = props.icon ?: Launch.create()
 
+        onMouseEnter = {
+            val link = kotlinx.browser.document.createElement("link")
+            link.setAttribute("rel", "prefetch")
+            link.setAttribute("href", "/${props.folderName}/")
+            kotlinx.browser.document.head?.appendChild(link)
+        }
+
         onClick = {
             props.onLaunch()
-            window.setTimeout({
-                window.location.href = "/${props.folderName}/"
-            }, 500)
+            if (js("document.startViewTransition") != undefined) {
+                window.setTimeout({
+                    window.location.href = "/${props.folderName}/"
+                }, 500)
+            } else {
+                window.setTimeout({
+                    window.location.href = "/${props.folderName}/"
+                }, 500)
+            }
         }
         +props.appName
     }

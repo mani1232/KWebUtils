@@ -17,10 +17,15 @@ import react.Props
 import react.create
 import react.dom.client.createRoot
 import react.dom.html.ReactHTML
+import react.raw.useEffectRaw
 import react.useState
 import web.cssom.*
 import web.dom.document
-
+import web.events.Event
+import web.events.EventType
+import web.events.addEventListener
+import web.events.removeEventListener
+import web.window.window
 
 object IndexMenuApp {
 
@@ -37,6 +42,20 @@ object IndexMenuApp {
     private val MenuContent = FC<Props> {
         val (currentTheme, toggleTheme) = useAppTheme()
         var isLoading by useState(false)
+
+        useEffectRaw(cleanup@{
+            val handlePageShow = { event: Event ->
+                if (event.asDynamic().persisted as Boolean) {
+                    isLoading = false
+                }
+            }
+
+            window.addEventListener(EventType("pageshow"), handlePageShow)
+
+            return@cleanup {
+                window.removeEventListener(EventType("pageshow"), handlePageShow)
+            }
+        })
 
         PageContainer {
             Box {
