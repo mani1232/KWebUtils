@@ -14,8 +14,8 @@ fun Application.configureFrameworks() {
     install(Koin) {
         slf4jLogger()
         modules(module {
-            single { loadConfiguration() }
-            single { Database(get()).also { TransactionManager.defaultDatabase = it.db } }
+            single(createdAtStart = true) { loadConfiguration() }
+            single(createdAtStart = true) { Database(get()).also { TransactionManager.defaultDatabase = it.db } }
             singleOf(::UserRepositoryImpl) bind UserRepository::class
         })
     }
