@@ -50,14 +50,6 @@ val LaunchButton = FC<LaunchButtonProps> { props ->
         color = ButtonColor.primary
         size = mui.material.Size.large
         startIcon = props.icon ?: Launch.create()
-
-        onMouseEnter = {
-            val link = kotlinx.browser.document.createElement("link")
-            link.setAttribute("rel", "prefetch")
-            link.setAttribute("href", "/${props.folderName}/")
-            kotlinx.browser.document.head?.appendChild(link)
-        }
-
         onClick = {
             props.onLaunch()
             if (js("document.startViewTransition") != undefined) {
