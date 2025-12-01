@@ -2,6 +2,7 @@ package cc.worldmandia
 
 import cc.worldmandia.database.user.SortType
 import cc.worldmandia.database.user.User
+import cc.worldmandia.database.user.User.toUserDto
 import cc.worldmandia.database.user.UserRepository
 import io.ktor.http.*
 import io.ktor.resources.*
@@ -13,6 +14,7 @@ import io.ktor.server.resources.Resources
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
+import org.jetbrains.exposed.v1.r2dbc.selectAll
 import org.koin.ktor.ext.inject
 
 fun Application.configureRouting() {
@@ -48,13 +50,7 @@ fun Application.configureRouting() {
                     }
                     get<UsersApi> { userApi ->
                         userApi.sort?.let { sortType ->
-                            call.respond(
-                                StringBuilder().append("List of articles sorted starting from ${sortType.name}")
-                                    .append(userRepository.getAllUsersBySortType(sortType).map {
-                                        StringBuilder().append(it[User.Table.id]).append(it[User.Table.name])
-                                            .append(it[User.Table.age]).append(it[User.Table.bio]).append("--------------")
-                                    })
-                            )
+                            call.respond(userRepository.getAllUsersBySortType(sortType).map { user -> user.toUserDto() })
                         } ?: call.respond(HttpStatusCode.BadRequest)
                     }
                 }
