@@ -40,13 +40,13 @@ dependencyResolutionManagement {
 
     versionCatalogs {
         create("kotlinWrappers") {
-            val wrappersVersion = "2025.11.12"
+            val wrappersVersion = "2025.12.1"
             from("org.jetbrains.kotlin-wrappers:kotlin-wrappers-catalog:$wrappersVersion")
         }
         create("custom") {
             from(files("gradle/custom.versions.toml"))
 
-            val devVersion = providers.gradleProperty("compose-dev.version").getOrElse("+dev3326")
+            val devVersion = providers.gradleProperty("compose-dev.version").get()
 
             version("androidx-lifecycle", "2.10.0-alpha07$devVersion")
             version("androidx-nav3", "1.0.0-alpha07$devVersion")
