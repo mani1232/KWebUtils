@@ -35,4 +35,5 @@ kotlin {
             //implementation(custom.compose.html)
         }
     }
+    applyDefaultHierarchyTemplate()
 }

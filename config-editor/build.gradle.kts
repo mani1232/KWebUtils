@@ -1,4 +1,5 @@
 import com.google.devtools.ksp.KspExperimental
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -51,8 +52,6 @@ kotlin {
 
     }
 
-    applyDefaultHierarchyTemplate()
-
     sourceSets {
         androidMain.dependencies {
             implementation(custom.compose.ui.tooling.preview)
@@ -103,12 +102,29 @@ kotlin {
             implementation(kotlinWrappers.web)
         }
     }
+    applyDefaultHierarchyTemplate()
 }
 
 compose {
     desktop {
         application {
             mainClass = "cc.worldmandia.kwebutils.MainKt"
+
+            nativeDistributions {
+                targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Exe)
+
+                packageName = "MyComposeApp"
+                packageVersion = "1.0.0"
+
+                windows {
+                    jvmArgs("-XX:+UseSerialGC", "-Xmx256m", "-Xss2m")
+                    menu = true
+                }
+            }
+            //buildTypes.release.proguard {
+            //    version.set("7.8.2")
+            //    optimize.set(true)
+            //}
         }
     }
     resources {

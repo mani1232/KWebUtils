@@ -1,6 +1,6 @@
 plugins {
-    alias(libs.plugins.androidApplication)
-    alias(libs.plugins.composeCompiler)
+    alias(custom.plugins.androidApplication)
+    alias(custom.plugins.composeCompiler)
 }
 
 android {
@@ -42,8 +42,8 @@ android {
 
 dependencies {
     implementation(project(":config-editor"))
-    implementation(libs.androidx.activity.compose)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    implementation(custom.androidx.activity.compose)
+    testImplementation(custom.junit)
+    androidTestImplementation(custom.androidx.junit)
+    androidTestImplementation(custom.androidx.espresso.core)
 }

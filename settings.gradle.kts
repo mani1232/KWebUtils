@@ -28,6 +28,7 @@ dependencyResolutionManagement {
         maven("https://packages.jetbrains.team/maven/p/firework/dev")
         maven("https://repo.worldmandia.cc/snapshots")
         maven("https://central.sonatype.com/repository/maven-snapshots/")
+        maven("https://gitlab.com/api/v4/projects/38224197/packages/maven/")
         google {
             mavenContent {
                 includeGroupAndSubgroups("androidx")
@@ -40,7 +41,7 @@ dependencyResolutionManagement {
 
     versionCatalogs {
         create("kotlinWrappers") {
-            val wrappersVersion = "2025.12.1"
+            val wrappersVersion = "2025.12.2"
             from("org.jetbrains.kotlin-wrappers:kotlin-wrappers-catalog:$wrappersVersion")
         }
         create("custom") {
@@ -61,3 +62,4 @@ include(":config-editor")
 //include(":compose-example") // Only for Android or maybe for non-web targets
 include(":index-menu")
 include(":backend")
+include("compose-native")

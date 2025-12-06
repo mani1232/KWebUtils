@@ -24,7 +24,7 @@ tasks.register("publishKWebUtils") {
     dependsOn(wasmApps.map { ":$it:wasmJsBrowserDistribution" })
 
     doLast {
-        val wwwDir = layout.buildDirectory.dir("www").get().asFile
+        val wwwDir = rootProject.layout.buildDirectory.dir("www").get().asFile
         if (wwwDir.exists()) wwwDir.deleteRecursively()
         wwwDir.mkdirs()
 
