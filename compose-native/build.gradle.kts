@@ -76,7 +76,7 @@ val targetPlatforms = listOf(
 )
 
 val MAGIC_STRING = "KOTLIN_FRONTEND_APP!"
-val EXTENSIONS_TO_GZIP =
+val EXTENSIONS_TO_COMPRESS =
     setOf("html", "js", "mjs", "css", "json", "xml", "txt", "map", "wasm", "obj", "vert", "frag", "glsl", "svg")
 
 val packageTasks = targetPlatforms.map { platform ->
@@ -139,7 +139,7 @@ val packageTasks = targetPlatforms.map { platform ->
                     .forEach { file ->
                         val relativePath = "/" + file.toRelativeString(webDirFile).replace("\\", "/")
                         val ext = file.extension.lowercase()
-                        val shouldCompress = ext in EXTENSIONS_TO_GZIP
+                        val shouldCompress = ext in EXTENSIONS_TO_COMPRESS
 
                         val originalBytes = file.readBytes()
                         val (bytesToWrite, isCompressed) = if (shouldCompress) {
