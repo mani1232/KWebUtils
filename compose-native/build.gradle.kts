@@ -57,6 +57,8 @@ kotlin {
     }
 }
 
+
+
 data class TargetPlatform(
     val taskNameSuffix: String,
     val linkTaskName: String,
@@ -65,14 +67,36 @@ data class TargetPlatform(
 )
 
 val targetPlatforms = listOf(
-    TargetPlatform(
-        taskNameSuffix = "Windows",
-        linkTaskName = "linkReleaseExecutableMingwX64",
-        sourceBinaryPath = "bin/mingwX64/releaseExecutable/compose-native.exe",
-        outputFileName = "compose-windows-final.exe"
-    ),
-    // TargetPlatform("Linux", "linkReleaseExecutableLinuxX64", "bin/linuxX64/releaseExecutable/compose-native.kexe", "compose-linux-final"),
-    // TargetPlatform("Macos", "linkReleaseExecutableMacosX64", "bin/macosX64/releaseExecutable/compose-native.kexe", "compose-macos-final")
+    System.getProperty("os.name").lowercase().let {
+        when {
+            it.contains("win") -> {
+                TargetPlatform(
+                    taskNameSuffix = "Windows",
+                    linkTaskName = "linkReleaseExecutableMingwX64",
+                    sourceBinaryPath = "bin/mingwX64/releaseExecutable/compose-native.exe",
+                    outputFileName = "compose-windows-final.exe"
+                )
+            }
+
+            it.contains("mac") -> {
+                TargetPlatform(
+                    "Macos",
+                    "linkReleaseExecutableMacosX64",
+                    "bin/macosX64/releaseExecutable/compose-native.kexe",
+                    "compose-macos-final"
+                )
+            }
+
+            else -> {
+                TargetPlatform(
+                    "Linux",
+                    "linkReleaseExecutableLinuxX64",
+                    "bin/linuxX64/releaseExecutable/compose-native.kexe",
+                    "compose-linux-final"
+                )
+            }
+        }
+    }
 )
 
 val MAGIC_STRING = "KOTLIN_FRONTEND_APP!"
