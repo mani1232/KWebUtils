@@ -28,5 +28,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: macos-app
-          path: build/*.kexe
+          path: compose-native/build/*.kexe
           retention-days: 5
