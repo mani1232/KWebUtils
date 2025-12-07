@@ -1,5 +1,6 @@
 package cc.worldmandia.kwebutils
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -13,6 +14,10 @@ import cc.worldmandia.kwebutils.domain.model.ProjectFile
 import cc.worldmandia.kwebutils.presentation.feature.dashboard.DashboardScreen
 import cc.worldmandia.kwebutils.presentation.feature.editor.FileEditorScreen
 import cc.worldmandia.kwebutils.presentation.theme.AppTheme
+import cc.worldmandia.kwebutils.presentation.theme.availableBrandColors
+import com.materialkolor.PaletteStyle
+import com.materialkolor.dynamiccolor.ColorSpec
+import com.materialkolor.rememberDynamicMaterialThemeState
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -37,7 +42,13 @@ data class EditorRoute(val file: ProjectFile) : NavKey
 @Preview
 fun StartConfigEditorApp() {
     KoinApplication(application = { modules(appModule) }) {
-        AppTheme {
+        val themeState = rememberDynamicMaterialThemeState(
+            seedColor = availableBrandColors.first().color,
+            isDark = isSystemInDarkTheme(),
+            specVersion = ColorSpec.SpecVersion.SPEC_2025,
+            style = PaletteStyle.Expressive
+        )
+        AppTheme(themeState) {
             val backStack = rememberNavBackStack(SavedStateConfiguration {
                 serializersModule = SerializersModule {
                     polymorphic(NavKey::class) {
@@ -54,7 +65,8 @@ fun StartConfigEditorApp() {
                             viewModel = koinViewModel(),
                             onFileOpen = { file ->
                                 backStack.add(EditorRoute(file))
-                            }
+                            },
+                            themeState
                         )
                     }
 

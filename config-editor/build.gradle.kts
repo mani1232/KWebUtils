@@ -83,6 +83,7 @@ kotlin {
             implementation(custom.serialization.yaml)
 
             implementation(custom.compose.dnd)
+            implementation(custom.compose.materialKolor)
             implementation(custom.compose.korender)
             implementation(custom.compose.haze)
             implementation(custom.compose.haze.materials)

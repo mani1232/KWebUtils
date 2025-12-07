@@ -9,6 +9,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draganddrop.DragAndDropEvent
 import androidx.compose.ui.draganddrop.domDataTransferOrNull
 import cc.worldmandia.kwebutils.domain.model.ProjectFile
@@ -57,11 +58,11 @@ actual fun onDragAndDropEvent(): (DragAndDropEvent) -> Boolean = { event ->
 }
 
 @Composable
-actual fun WebBackButton() {
+actual fun WebBackButton(modifier: Modifier) {
     val isPwa by rememberIsPwaState()
 
     if (!isPwa) {
-        IconButton(onClick = {
+        IconButton(modifier = modifier, onClick = {
             window.history.back()
         }) {
             Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")

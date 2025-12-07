@@ -32,6 +32,7 @@ rpc = "0.10.1"
 webviewko = "0.6.0"
 coroutines = "1.10.2"
 kotlinIo = "0.8.2"
+materialKolor = "5.0.0-alpha04"
 
 [libraries]
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin" } # TODO koin-bom not working for backend
@@ -71,6 +72,7 @@ compose-dnd = { module = "com.mohamedrejeb.dnd:compose-dnd", version.ref = "comp
 compose-korender = { module = "com.github.zakgof:korender", version.ref = "compose-korender" }
 compose-haze = { module = "dev.chrisbanes.haze:haze", version.ref = "compose-haze" }
 compose-haze-materials = { module = "dev.chrisbanes.haze:haze-materials", version.ref = "compose-haze" }
+compose-materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
 store = { module = "org.mobilenativefoundation.store:store5", version.ref = "store" }
 multiplatformSettings = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatformSettings" }
 
