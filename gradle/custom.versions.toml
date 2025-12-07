@@ -31,6 +31,7 @@ ktoml = "0.7.1"
 rpc = "0.10.1"
 webviewko = "0.6.0"
 coroutines = "1.10.2"
+kotlinIo = "0.8.2"
 
 [libraries]
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin" } # TODO koin-bom not working for backend
@@ -117,7 +118,11 @@ koin-ktor = { module = "io.insert-koin:koin-ktor", version.ref = "koin" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 
 webviewko = { module = "com.github.winterreisender:webviewko", version.ref = "webviewko" }
+webviewko-linux = { module = "com.github.winterreisender:webviewko-linuxx64", version.ref = "webviewko" }
+webviewko-windows = { module = "com.github.winterreisender:webviewko-mingwx64", version.ref = "webviewko" }
+webviewko-macos = { module = "com.github.winterreisender:webviewko-macosx64", version.ref = "webviewko" }
 kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlin-io = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinIo" }
 
 [bundles]
 compose-common = [

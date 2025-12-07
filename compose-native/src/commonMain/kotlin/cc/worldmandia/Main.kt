@@ -1,6 +1,5 @@
 package cc.worldmandia
 
-import com.github.winterreisender.webviewko.WebviewKo
 import io.ktor.http.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
@@ -18,7 +17,8 @@ fun main() {
                 var requestPath = if (rawPath == "/") "/index.html" else rawPath
 
                 if (!assetManager.exists(requestPath)) {
-                    val potentialIndex = if (requestPath.endsWith("/")) "${requestPath}index.html" else "$requestPath/index.html"
+                    val potentialIndex =
+                        if (requestPath.endsWith("/")) "${requestPath}index.html" else "$requestPath/index.html"
                     if (assetManager.exists(potentialIndex)) {
                         requestPath = potentialIndex
                     }
@@ -27,11 +27,11 @@ fun main() {
                 val asset = assetManager.load(requestPath)
 
                 if (asset != null) {
-                    val (bytes, isGzipped) = asset
+                    val (bytes, isCompressed) = asset
 
                     val contentType = getContentType(requestPath)
-                    if (isGzipped) {
-                        call.response.header(HttpHeaders.ContentEncoding, "gzip")
+                    if (isCompressed) {
+                        call.response.header(HttpHeaders.ContentEncoding, "br")
                     }
                     call.respondBytes(bytes, contentType)
                 } else {
@@ -45,16 +45,12 @@ fun main() {
         server.engine.resolvedConnectors().first().port
     }
 
-    val webview = WebviewKo(0)
-    webview.title("Compose Web like Native")
-    webview.size(800, 800)
-
-    webview.url("http://localhost:$port/index.html")
-
-    webview.show()
+    startWebview("http://localhost:$port/index.html")
 
     server.stop(100, 100)
 }
+
+expect fun startWebview(url: String)
 
 fun getContentType(path: String): ContentType {
     return when {

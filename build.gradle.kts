@@ -1,6 +1,23 @@
 import cc.worldmandia.FrontEnd.MENU_APP
 import cc.worldmandia.FrontEnd.wasmApps
 
+buildscript {
+    dependencies {
+        classpath("com.aayushatharva.brotli4j:brotli4j:1.20.0")
+        classpath("com.aayushatharva.brotli4j:native-${
+            System.getProperty("os.name").lowercase().let {
+                when {
+                    it.contains("win") -> "windows-x86_64"
+                    it.contains("mac") -> "osx-x86_64"
+                    else -> {
+                        "linux-x86_64"
+                    }
+                }
+            }
+        }:1.20.0")
+    }
+}
+
 plugins {
     alias(custom.plugins.composeMultiplatform) apply false
     alias(custom.plugins.composeCompiler) apply false
