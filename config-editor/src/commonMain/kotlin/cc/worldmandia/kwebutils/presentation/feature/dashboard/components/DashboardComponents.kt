@@ -1,9 +1,7 @@
 package cc.worldmandia.kwebutils.presentation.feature.dashboard.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cc.worldmandia.kwebutils.core.OrbitCamera
@@ -53,6 +50,7 @@ fun FileUploadCard(modifier: Modifier = Modifier) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ColumnScope.CustomDashBoardAppBar(
     onAmoledClick: (Boolean) -> Unit,
@@ -78,7 +76,6 @@ fun ColumnScope.CustomDashBoardAppBar(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Spacer(Modifier.width(4.dp))
                 WebBackButton()
             }
 
@@ -93,37 +90,46 @@ fun ColumnScope.CustomDashBoardAppBar(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(
-                    text = "Amoled",
-                    style = MaterialTheme.typography.labelMedium,
-                    fontFamily = MainFont,
-                    textAlign = TextAlign.Center
-                )
+                Spacer(Modifier.width(4.dp))
 
-                Spacer(Modifier.width(2.dp))
-
-                Switch(
-                    checked = isAmoledEnabled,
-                    onCheckedChange = {
-                        isAmoledEnabled = it
-                        onAmoledClick(isAmoledEnabled)
+                TooltipBox(
+                    positionProvider =
+                        TooltipDefaults.rememberTooltipPositionProvider(TooltipAnchorPosition.Left),
+                    tooltip = {
+                        PlainTooltip {
+                            Text(
+                                "${
+                                    if (isAmoledEnabled) "Disable" else "Enable"
+                                } amoled"
+                            )
+                        }
                     },
-                    modifier = Modifier.scale(0.9f)
-                )
+                    state = rememberTooltipState(),
+                ) {
+                    Switch(
+                        checked = isAmoledEnabled,
+                        onCheckedChange = {
+                            isAmoledEnabled = it
+                            onAmoledClick(isAmoledEnabled)
+                        },
+                        modifier = Modifier.scale(0.95f)
+                    )
+                }
+
+                Spacer(Modifier.width(8.dp))
 
                 VerticalDivider(
                     modifier = Modifier
-                        .height(32.dp)
-                        .padding(horizontal = 8.dp),
+                        .height(32.dp),
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
                 )
+
+                Spacer(Modifier.width(4.dp))
 
                 ThemePaletteDropdownButton(selectedOption = selectedBrandColor) { newColor ->
                     selectedBrandColor = newColor
                     onColorClick(selectedBrandColor.color)
                 }
-
-                Spacer(Modifier.width(4.dp))
             }
         }
     }
@@ -220,15 +226,12 @@ fun ThemePaletteDropdownButton(
 
     TooltipBox(
         positionProvider =
-            TooltipDefaults.rememberTooltipPositionProvider(TooltipAnchorPosition.Above),
+            TooltipDefaults.rememberTooltipPositionProvider(TooltipAnchorPosition.Left),
         tooltip = { PlainTooltip { Text("Change color") } },
         state = rememberTooltipState(),
     ) {
         IconButton(onClick = { expanded = true }) {
-            Canvas(modifier = Modifier.fillMaxSize().padding(4.dp)) {
-                drawCircle(color = selectedOption.color)
-                drawCircle(color = Color.Gray, style = Stroke(1.dp.toPx()))
-            }
+            ColorSwatch(selectedOption.color, modifier = Modifier.size(32.dp))
         }
     }
 
@@ -240,7 +243,7 @@ fun ThemePaletteDropdownButton(
             DropdownMenuItem(
                 text = { Text(option.name) },
                 leadingIcon = {
-                    ColorSwatch(option.color)
+                    ColorSwatch(option.color, modifier = Modifier.size(24.dp))
                 },
                 onClick = {
                     onOptionSelected(option)
@@ -253,12 +256,10 @@ fun ThemePaletteDropdownButton(
 }
 
 @Composable
-fun ColorSwatch(color: Color) {
+fun ColorSwatch(color: Color, modifier: Modifier = Modifier) {
     Box(
-        modifier = Modifier
-            .size(24.dp)
+        modifier = modifier
             .clip(CircleShape)
             .background(color)
-            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape)
     )
 }
