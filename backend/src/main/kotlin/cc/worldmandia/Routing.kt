@@ -12,10 +12,11 @@ import io.ktor.server.resources.*
 import io.ktor.server.resources.Resources
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.io.files.FileSystem
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
 import kotlinx.serialization.Serializable
 import org.koin.ktor.ext.inject
-import kotlin.io.path.Path
-import kotlin.io.path.exists
 
 fun Application.configureRouting() {
     install(Resources)
@@ -35,10 +36,11 @@ fun Application.configureRouting() {
     }
     val userRepository by inject<UserRepository>()
 
+
     routing {
         preCompressed {
             singlePageApplication {
-                useResources = !Path("static").exists()
+                useResources = !Path("static/").isEmptyDirectory()
                 filesPath = "static"
                 defaultPage = "index.html"
                 ignoreFiles { it.endsWith(".txt") }
@@ -57,6 +59,18 @@ fun Application.configureRouting() {
             }
         }
 
+    }
+}
+
+private fun Path.isEmptyDirectory(fs: FileSystem = SystemFileSystem): Boolean {
+    if (fs.metadataOrNull(this)?.isDirectory != true) {
+        return false
+    }
+
+    return try {
+        fs.list(this).isEmpty()
+    } catch (_: Exception) {
+        false
     }
 }
 
