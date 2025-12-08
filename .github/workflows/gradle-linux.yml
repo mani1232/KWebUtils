@@ -15,7 +15,7 @@ jobs:
       - name: Install Linux Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgtk-4-dev libwebkitgtk-6.0-dev
+          sudo apt-get install libgtk-3-0 libwebkit2gtk-4.1-0
 
       - name: Setup Java
         uses: actions/setup-java@v4
