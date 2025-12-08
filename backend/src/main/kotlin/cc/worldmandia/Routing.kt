@@ -24,7 +24,10 @@ fun Application.configureRouting() {
         exception<Throwable> { call, cause ->
             // TODO remove cause
             call.response.header("Refresh", "5; url=/")
-            call.respondText(text = "500: $cause. You will be redirected in 5 seconds.", status = HttpStatusCode.InternalServerError)
+            call.respondText(
+                text = "500: $cause. You will be redirected in 5 seconds.",
+                status = HttpStatusCode.InternalServerError
+            )
         }
         status(HttpStatusCode.NotFound) { call, status ->
             call.response.header("Refresh", "5; url=/")
@@ -38,7 +41,7 @@ fun Application.configureRouting() {
 
 
     routing {
-        preCompressed {
+        preCompressed(CompressedFileType.BROTLI, CompressedFileType.GZIP) {
             singlePageApplication {
                 useResources = !Path("static/").isEmptyDirectory()
                 filesPath = "static"
@@ -52,7 +55,8 @@ fun Application.configureRouting() {
                     }
                     get<UsersApi> { userApi ->
                         userApi.sort?.let { sortType ->
-                            call.respond(userRepository.getAllUsersBySortType(sortType).map { user -> user.toUserDto() })
+                            call.respond(
+                                userRepository.getAllUsersBySortType(sortType).map { user -> user.toUserDto() })
                         } ?: call.respond(HttpStatusCode.BadRequest)
                     }
                 }

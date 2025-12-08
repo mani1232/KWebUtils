@@ -3,11 +3,7 @@ package cc.worldmandia.kwebutils.material
 import emotion.styled.styled
 import kotlinx.browser.window
 import mui.icons.material.Launch
-import mui.material.Box
-import mui.material.Button
-import mui.material.ButtonColor
-import mui.material.ButtonVariant
-import mui.material.Typography
+import mui.material.*
 import mui.material.styles.Theme
 import react.FC
 import react.Props
@@ -41,25 +37,23 @@ external interface LaunchButtonProps : Props {
     var appName: String
     var folderName: String
     var icon: ReactNode?
-    var onLaunch: () -> Unit
 }
 
 val LaunchButton = FC<LaunchButtonProps> { props ->
     StyledLaunchBtn {
         variant = ButtonVariant.contained
         color = ButtonColor.primary
-        size = mui.material.Size.large
+        size = Size.large
         startIcon = props.icon ?: Launch.create()
         onClick = {
-            props.onLaunch()
             if (js("document.startViewTransition") != undefined) {
                 window.setTimeout({
                     window.location.href = "/${props.folderName}/"
-                }, 500)
+                }, 1000)
             } else {
                 window.setTimeout({
                     window.location.href = "/${props.folderName}/"
-                }, 500)
+                }, 1000)
             }
         }
         +props.appName

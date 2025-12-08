@@ -5,10 +5,7 @@ import cc.worldmandia.kwebutils.material.LaunchButton
 import cc.worldmandia.kwebutils.material.PageContainer
 import cc.worldmandia.kwebutils.theme.ThemeModule
 import cc.worldmandia.kwebutils.theme.useAppTheme
-import mui.icons.material.Brightness4
-import mui.icons.material.Brightness7
-import mui.icons.material.Construction
-import mui.icons.material.Tune
+import mui.icons.material.*
 import mui.material.*
 import mui.material.styles.TypographyVariant
 import mui.system.sx
@@ -17,15 +14,8 @@ import react.Props
 import react.create
 import react.dom.client.createRoot
 import react.dom.html.ReactHTML
-import react.raw.useEffectRaw
-import react.useState
 import web.cssom.*
 import web.dom.document
-import web.events.Event
-import web.events.EventType
-import web.events.addEventListener
-import web.events.removeEventListener
-import web.window.window
 
 object IndexMenuApp {
 
@@ -41,22 +31,6 @@ object IndexMenuApp {
 
     private val MenuContent = FC<Props> {
         val (currentTheme, toggleTheme) = useAppTheme()
-        var isLoading by useState(false)
-
-        useEffectRaw(cleanup@{
-            val handlePageShow = { event: Event ->
-                if (event.asDynamic().persisted as Boolean) {
-                    isLoading = false
-                }
-            }
-
-            window.addEventListener(EventType("pageshow"), handlePageShow)
-
-            return@cleanup {
-                window.removeEventListener(EventType("pageshow"), handlePageShow)
-            }
-        })
-
         PageContainer {
             Box {
                 sx {
@@ -100,20 +74,23 @@ object IndexMenuApp {
                         appName = "Config Editor"
                         folderName = "config-editor"
                         icon = Tune.create()
-                        onLaunch = { isLoading = true }
                     }
 
                     LaunchButton {
                         appName = "In dev"
-                        folderName = "in-dev"
+                        folderName = "ai-chat"
+                        icon = Chat.create()
+                    }
+
+                    LaunchButton {
+                        appName = "In dev"
+                        folderName = "other-things"
                         icon = Construction.create()
-                        onLaunch = { isLoading = true }
                     }
                 }
             }
 
             Backdrop {
-                open = isLoading
                 sx { zIndex = integer(9999); color = Color("#fff") }
 
                 Stack {

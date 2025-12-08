@@ -63,7 +63,8 @@ ktor {
                     "-XX:AllocatePrefetchStyle=1",
                     "-XX:-ZProactive",
                     "-Dterminal.jline=false",
-                    "-Dterminal.ansi=true"
+                    "-Dterminal.ansi=true",
+                    "--enable-native-access=ALL-UNNAMED",
                 )
             }
         }
