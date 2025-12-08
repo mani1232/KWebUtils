@@ -1,7 +1,6 @@
 package cc.worldmandia
 
 import cc.worldmandia.database.user.SortType
-import cc.worldmandia.database.user.User
 import cc.worldmandia.database.user.User.toUserDto
 import cc.worldmandia.database.user.UserRepository
 import io.ktor.http.*
@@ -14,8 +13,9 @@ import io.ktor.server.resources.Resources
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
-import org.jetbrains.exposed.v1.r2dbc.selectAll
 import org.koin.ktor.ext.inject
+import kotlin.io.path.Path
+import kotlin.io.path.exists
 
 fun Application.configureRouting() {
     install(Resources)
@@ -38,7 +38,7 @@ fun Application.configureRouting() {
     routing {
         preCompressed {
             singlePageApplication {
-                useResources = true
+                useResources = !Path("static").exists()
                 filesPath = "static"
                 defaultPage = "index.html"
                 ignoreFiles { it.endsWith(".txt") }
