@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.google.devtools.ksp.KspExperimental
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
@@ -60,39 +61,44 @@ kotlin {
             implementation(custom.koin.android)
         }
 
-        commonMain.dependencies {
-            implementation(custom.bundles.compose.common)
-            implementation(custom.compose.material.icons.extended)
+        commonMain {
+            kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+            dependencies {
+                implementation(custom.compose.lyricist)
+                implementation(custom.multiplatformLocale)
+                implementation(custom.bundles.compose.common)
+                implementation(custom.compose.material.icons.extended)
 
-            implementation(custom.androidx.lifecycle.viewmodel)
-            implementation(custom.androidx.lifecycle.runtime)
-            implementation(custom.androidx.material3)
-            implementation(custom.androidx.material3.adaptive)
-            implementation(custom.androidx.material3.adaptive.nav3)
-            implementation(custom.androidx.lifecycle.viewmodel.nav3)
-            implementation(custom.androidx.nav3.ui)
+                implementation(custom.androidx.lifecycle.viewmodel)
+                implementation(custom.androidx.lifecycle.runtime)
+                implementation(custom.androidx.material3)
+                implementation(custom.androidx.material3.adaptive)
+                implementation(custom.androidx.material3.adaptive.nav3)
+                implementation(custom.androidx.lifecycle.viewmodel.nav3)
+                implementation(custom.androidx.nav3.ui)
 
-            implementation(project.dependencies.platform(custom.koin.bom))
-            implementation(custom.koin.core)
-            implementation(custom.koin.compose)
-            implementation(custom.koin.compose.viewmodel)
-            implementation(custom.koin.compose.viewmodel.navigation)
-            implementation(custom.koin.compose.viewmodel.navigation3)
+                implementation(project.dependencies.platform(custom.koin.bom))
+                implementation(custom.koin.core)
+                implementation(custom.koin.compose)
+                implementation(custom.koin.compose.viewmodel)
+                implementation(custom.koin.compose.viewmodel.navigation)
+                implementation(custom.koin.compose.viewmodel.navigation3)
 
-            implementation(custom.serialization.json5)
-            implementation(custom.serialization.yaml)
+                implementation(custom.serialization.json5)
+                implementation(custom.serialization.yaml)
 
-            implementation(custom.compose.dnd)
-            implementation(custom.compose.materialKolor)
-            implementation(custom.compose.korender)
-            implementation(custom.compose.haze)
-            implementation(custom.compose.haze.materials)
+                implementation(custom.compose.dnd)
+                implementation(custom.compose.materialKolor)
+                implementation(custom.compose.korender)
+                implementation(custom.compose.haze)
+                implementation(custom.compose.haze.materials)
 
-            implementation(custom.multiplatformSettings)
+                implementation(custom.multiplatformSettings)
 
-            implementation(custom.filekit.core)
-            implementation(custom.filekit.dialogs)
-            implementation(custom.filekit.dialogs.compose)
+                implementation(custom.filekit.core)
+                implementation(custom.filekit.dialogs)
+                implementation(custom.filekit.dialogs.compose)
+            }
         }
         commonTest.dependencies {
             implementation(custom.kotlin.test)
@@ -122,10 +128,10 @@ compose {
                     menu = true
                 }
             }
-            //buildTypes.release.proguard {
-            //    version.set("7.8.2")
-            //    optimize.set(true)
-            //}
+//buildTypes.release.proguard {
+//    version.set("7.8.2")
+//    optimize.set(true)
+//}
         }
     }
     resources {
@@ -133,7 +139,21 @@ compose {
     }
 }
 
+dependencies {
+    add("kspCommonMainMetadata", custom.compose.lyricist.processor)
+}
+
+tasks {
+    configureEach {
+        if (name.startsWith("compileKotlin")) {
+            dependsOn("kspCommonMainKotlinMetadata")
+        }
+    }
+}
+
 ksp {
     @OptIn(KspExperimental::class)
     useKsp2 = true
+    arg("lyricist.internalVisibility", "true")
+    arg("lyricist.generateStringsProperty", "true")
 }

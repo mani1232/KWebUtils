@@ -24,9 +24,10 @@ plugins {
 
 dependencyResolutionManagement {
     repositories {
+        maven("https://repo.worldmandia.cc/snapshots")
+        mavenLocal()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
         maven("https://packages.jetbrains.team/maven/p/firework/dev")
-        maven("https://repo.worldmandia.cc/snapshots")
         maven("https://central.sonatype.com/repository/maven-snapshots/")
         maven("https://gitlab.com/api/v4/projects/38224197/packages/maven/")
         google {
@@ -53,7 +54,7 @@ dependencyResolutionManagement {
             version("androidx-nav3", "1.0.0-alpha07$devVersion")
             version("androidx-adaptive", "1.3.0-alpha03$devVersion")
             version("androidx-material3", "1.10.0-alpha06$devVersion")
-            version("composeMultiplatform", "1.10.10-alpha01$devVersion")
+            version("composeMultiplatform", "1.11.0-alpha01$devVersion")
         }
     }
 }

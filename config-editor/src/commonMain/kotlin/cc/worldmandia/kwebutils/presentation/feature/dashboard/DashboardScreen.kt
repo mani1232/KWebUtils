@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import cafe.adriel.lyricist.strings
 import cc.worldmandia.kwebutils.domain.model.ProjectFile
 import cc.worldmandia.kwebutils.presentation.common.MainFont
 import cc.worldmandia.kwebutils.presentation.feature.dashboard.components.CustomDashBoardAppBar
@@ -107,6 +108,7 @@ fun DashboardScreen(
             if (files.isEmpty()) {
                 Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                     Text("No open files.\nClick + to start.", fontFamily = MainFont)
+                    Text(strings.annotated)
                     //Column(modifier = Modifier.width(400.dp).height(400.dp).align(Alignment.CenterStart)) {
                     //    TestChangeColor(MaterialTheme.colorScheme.surface)
                     //    GltfExample(MaterialTheme.colorScheme.surface)

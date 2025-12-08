@@ -3,7 +3,7 @@ androidx-lifecycle = "2.10.0-alpha07"
 androidx-nav3 = "1.0.0-alpha07"
 androidx-adaptive = "1.3.0-alpha03"
 androidx-material3 = "1.10.0-alpha06"
-composeMultiplatform = "1.10.10-alpha01"
+composeMultiplatform = "1.11.0-alpha01"
 junit = "6.0.1"
 kotlin = "2.3.0-RC2"
 json5 = "0.5.0"
@@ -23,7 +23,7 @@ androidxJunit = "1.3.0"
 espressoCore = "3.7.0"
 activityCompose = "1.12.1"
 ktor = "3.3.3"
-composeHotReload = "1.1.0-alpha+179"
+composeHotReload = "1.1.0-alpha+181"
 logback = "1.5.21"
 exposed = "1.0.0-rc-4"
 postgresql = "1.1.1.RELEASE"
@@ -33,6 +33,8 @@ webviewko = "0.6.0"
 coroutines = "1.10.2"
 kotlinIo = "0.8.2"
 materialKolor = "5.0.0-alpha04"
+lyricist = "1.8.0"
+multiplatformLocale = "0.10.0-SNAPSHOT" # from maven-local
 
 [libraries]
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin" } # TODO koin-bom not working for backend
@@ -73,8 +75,11 @@ compose-korender = { module = "com.github.zakgof:korender", version.ref = "compo
 compose-haze = { module = "dev.chrisbanes.haze:haze", version.ref = "compose-haze" }
 compose-haze-materials = { module = "dev.chrisbanes.haze:haze-materials", version.ref = "compose-haze" }
 compose-materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
+compose-lyricist = { module = "cafe.adriel.lyricist:lyricist", version.ref = "lyricist" }
+compose-lyricist-processor = { module = "cafe.adriel.lyricist:lyricist-processor", version.ref = "lyricist" }
 store = { module = "org.mobilenativefoundation.store:store5", version.ref = "store" }
 multiplatformSettings = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatformSettings" }
+multiplatformLocale = { module = "com.vanniktech:multiplatform-locale", version.ref = "multiplatformLocale" }
 
 filekit-core = { module = "io.github.vinceglb:filekit-core", version.ref = "filekit" }
 filekit-dialogs = { module = "io.github.vinceglb:filekit-dialogs", version.ref = "filekit" }

@@ -9,6 +9,8 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
+import cafe.adriel.lyricist.ProvideStrings
+import cafe.adriel.lyricist.rememberStrings
 import cc.worldmandia.kwebutils.di.appModule
 import cc.worldmandia.kwebutils.domain.model.ProjectFile
 import cc.worldmandia.kwebutils.presentation.feature.dashboard.DashboardScreen
@@ -48,42 +50,48 @@ fun StartConfigEditorApp() {
             specVersion = ColorSpec.SpecVersion.SPEC_2025,
             style = PaletteStyle.Expressive
         )
-        AppTheme(themeState) {
-            val backStack = rememberNavBackStack(SavedStateConfiguration {
-                serializersModule = SerializersModule {
-                    polymorphic(NavKey::class) {
-                        subclass(DashboardRoute::class)
-                        subclass(EditorRoute::class)
+
+        // TODO button for manually change and save
+        val langSelector = rememberStrings()
+
+        ProvideStrings(langSelector) {
+            AppTheme(themeState) {
+                val backStack = rememberNavBackStack(SavedStateConfiguration {
+                    serializersModule = SerializersModule {
+                        polymorphic(NavKey::class) {
+                            subclass(DashboardRoute::class)
+                            subclass(EditorRoute::class)
+                        }
                     }
+                }, DashboardRoute)
+
+                rememberKoinModules {
+                    listOf(module {
+                        navigation<DashboardRoute> {
+                            DashboardScreen(
+                                viewModel = koinViewModel(),
+                                onFileOpen = { file ->
+                                    backStack.add(EditorRoute(file))
+                                },
+                                themeState
+                            )
+                        }
+
+                        navigation<EditorRoute> { route ->
+                            FileEditorScreen(
+                                viewModel = koinViewModel(parameters = { parametersOf(route.file) }),
+                                onBack = { backStack.removeLastOrNull() }
+                            )
+                        }
+                    })
                 }
-            }, DashboardRoute)
 
-            rememberKoinModules {
-                listOf(module {
-                    navigation<DashboardRoute> {
-                        DashboardScreen(
-                            viewModel = koinViewModel(),
-                            onFileOpen = { file ->
-                                backStack.add(EditorRoute(file))
-                            },
-                            themeState
-                        )
-                    }
-
-                    navigation<EditorRoute> { route ->
-                        FileEditorScreen(
-                            viewModel = koinViewModel(parameters = { parametersOf(route.file) }),
-                            onBack = { backStack.removeLastOrNull() }
-                        )
-                    }
-                })
+                NavDisplay(
+                    backStack = backStack,
+                    onBack = { backStack.removeLastOrNull() },
+                    entryProvider = koinEntryProvider()
+                )
             }
-
-            NavDisplay(
-                backStack = backStack,
-                onBack = { backStack.removeLastOrNull() },
-                entryProvider = koinEntryProvider()
-            )
         }
     }
 }
