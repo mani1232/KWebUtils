@@ -33,7 +33,7 @@ webviewko = "0.6.0"
 coroutines = "1.10.2"
 kotlinIo = "0.8.2"
 materialKolor = "5.0.0-alpha04"
-lyricist = "1.8.0"
+lyricist = "unspecified" # from maven-local, bcs "1.8.0" with error
 multiplatformLocale = "0.10.0-SNAPSHOT" # from maven-local
 
 [libraries]

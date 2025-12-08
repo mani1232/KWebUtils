@@ -51,11 +51,10 @@ fun StartConfigEditorApp() {
             style = PaletteStyle.Expressive
         )
 
-        // TODO button for manually change and save
-        val langSelector = rememberStrings()
-
-        ProvideStrings(langSelector) {
-            AppTheme(themeState) {
+        AppTheme(themeState) {
+            // TODO button for manually change and save
+            val langSelector = rememberStrings()
+            ProvideStrings(langSelector) {
                 val backStack = rememberNavBackStack(SavedStateConfiguration {
                     serializersModule = SerializersModule {
                         polymorphic(NavKey::class) {

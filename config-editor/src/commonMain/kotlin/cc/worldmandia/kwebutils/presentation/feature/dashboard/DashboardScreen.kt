@@ -107,8 +107,11 @@ fun DashboardScreen(
 
             if (files.isEmpty()) {
                 Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                    Text("No open files.\nClick + to start.", fontFamily = MainFont)
-                    Text(strings.annotated)
+                    // TODO Temporary
+                    Column {
+                        Text("No open files.\nClick + to start.", fontFamily = MainFont)
+                        Text(strings.annotated)
+                    }
                     //Column(modifier = Modifier.width(400.dp).height(400.dp).align(Alignment.CenterStart)) {
                     //    TestChangeColor(MaterialTheme.colorScheme.surface)
                     //    GltfExample(MaterialTheme.colorScheme.surface)
