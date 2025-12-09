@@ -53,14 +53,14 @@ dependencyResolutionManagement {
             version("androidx-lifecycle", "2.10.0-alpha07$devVersion")
             version("androidx-nav3", "1.0.0-alpha07$devVersion")
             version("androidx-adaptive", "1.3.0-alpha03$devVersion")
-            version("androidx-material3", "1.10.0-alpha06$devVersion")
+            version("androidx-material3", "1.11.0-alpha01$devVersion")
             version("composeMultiplatform", "1.11.0-alpha01$devVersion")
         }
     }
 }
 
 include(":config-editor")
-include(":compose-example") // Only for Android or maybe for non-web targets
+//include(":compose-example") // Only for Android or maybe for non-web targets
 include(":index-menu")
 include(":backend")
 include("compose-native")
