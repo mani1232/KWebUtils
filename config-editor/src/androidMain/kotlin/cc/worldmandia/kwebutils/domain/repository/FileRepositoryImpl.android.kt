@@ -1,6 +1,6 @@
-package cc.worldmandia.kwebconverter.domain.repository
+package cc.worldmandia.kwebutils.domain.repository
 
-import cc.worldmandia.kwebconverter.domain.model.ProjectFile
+import cc.worldmandia.kwebutils.domain.model.ProjectFile
 import io.github.vinceglb.filekit.FileKit
 import io.github.vinceglb.filekit.dialogs.openFileSaver
 import io.github.vinceglb.filekit.write

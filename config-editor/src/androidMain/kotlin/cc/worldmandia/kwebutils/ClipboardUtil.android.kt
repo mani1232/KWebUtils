@@ -1,4 +1,4 @@
-package cc.worldmandia.kwebconverter
+package cc.worldmandia.kwebutils
 
 import android.content.ClipData
 import androidx.compose.ui.platform.ClipEntry
