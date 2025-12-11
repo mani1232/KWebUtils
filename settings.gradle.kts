@@ -6,6 +6,7 @@ pluginManagement {
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
         maven("https://central.sonatype.com/repository/maven-snapshots/")
         maven("https://packages.jetbrains.team/maven/p/firework/dev")
+        maven("https://redirector.kotlinlang.org/maven/bootstrap")
         google {
             mavenContent {
                 includeGroupAndSubgroups("androidx")
@@ -29,6 +30,7 @@ dependencyResolutionManagement {
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
         maven("https://packages.jetbrains.team/maven/p/firework/dev")
         maven("https://central.sonatype.com/repository/maven-snapshots/")
+        maven("https://redirector.kotlinlang.org/maven/bootstrap")
         maven("https://gitlab.com/api/v4/projects/38224197/packages/maven/")
         google {
             mavenContent {
@@ -42,7 +44,7 @@ dependencyResolutionManagement {
 
     versionCatalogs {
         create("kotlinWrappers") {
-            val wrappersVersion = "2025.12.3"
+            val wrappersVersion = "2025.12.5"
             from("org.jetbrains.kotlin-wrappers:kotlin-wrappers-catalog:$wrappersVersion")
         }
         create("custom") {
@@ -51,7 +53,7 @@ dependencyResolutionManagement {
             val devVersion = providers.gradleProperty("compose-dev.version").get()
 
             version("androidx-lifecycle", "2.10.0-alpha07$devVersion")
-            version("androidx-nav3", "1.0.0-alpha07$devVersion")
+            version("androidx-nav3", "1.1.0-alpha01$devVersion")
             version("androidx-adaptive", "1.3.0-alpha03$devVersion")
             version("androidx-material3", "1.11.0-alpha01$devVersion")
             version("composeMultiplatform", "1.11.0-alpha01$devVersion")

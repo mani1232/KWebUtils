@@ -10,7 +10,6 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
 import cafe.adriel.lyricist.ProvideStrings
-import cafe.adriel.lyricist.rememberStrings
 import cc.worldmandia.kwebutils.di.appModule
 import cc.worldmandia.kwebutils.domain.model.ProjectFile
 import cc.worldmandia.kwebutils.presentation.feature.dashboard.DashboardScreen
@@ -30,6 +29,7 @@ import org.koin.compose.navigation3.koinEntryProvider
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.parameter.parametersOf
+import org.koin.dsl.koinConfiguration
 import org.koin.dsl.module
 import org.koin.dsl.navigation3.navigation
 
@@ -43,7 +43,7 @@ data class EditorRoute(val file: ProjectFile) : NavKey
 @Composable
 @Preview
 fun StartConfigEditorApp() {
-    KoinApplication(application = { modules(appModule) }) {
+    KoinApplication(configuration = koinConfiguration(declaration = { modules(appModule) }), content = {
         val themeState = rememberDynamicMaterialThemeState(
             seedColor = availableBrandColors.first().color,
             isDark = isSystemInDarkTheme(),
@@ -52,9 +52,7 @@ fun StartConfigEditorApp() {
         )
 
         AppTheme(themeState) {
-            // TODO button for manually change and save
-            val langSelector = rememberStrings()
-            ProvideStrings(langSelector) {
+            ProvideStrings {
                 val backStack = rememberNavBackStack(SavedStateConfiguration {
                     serializersModule = SerializersModule {
                         polymorphic(NavKey::class) {
@@ -68,19 +66,16 @@ fun StartConfigEditorApp() {
                     listOf(module {
                         navigation<DashboardRoute> {
                             DashboardScreen(
-                                viewModel = koinViewModel(),
-                                onFileOpen = { file ->
+                                viewModel = koinViewModel(), onFileOpen = { file ->
                                     backStack.add(EditorRoute(file))
-                                },
-                                themeState
+                                }, themeState
                             )
                         }
 
                         navigation<EditorRoute> { route ->
                             FileEditorScreen(
                                 viewModel = koinViewModel(parameters = { parametersOf(route.file) }),
-                                onBack = { backStack.removeLastOrNull() }
-                            )
+                                onBack = { backStack.removeLastOrNull() })
                         }
                     })
                 }
@@ -92,5 +87,5 @@ fun StartConfigEditorApp() {
                 )
             }
         }
-    }
+    })
 }

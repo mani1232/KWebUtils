@@ -123,7 +123,7 @@ fun DashboardScreen(
             } else {
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     items(files, key = { it.id }) { file ->
-                        FileCard(file, onClick = { onFileOpen(file) })
+                        FileCard(file = file, onClick = { onFileOpen(file) })
                     }
                 }
             }

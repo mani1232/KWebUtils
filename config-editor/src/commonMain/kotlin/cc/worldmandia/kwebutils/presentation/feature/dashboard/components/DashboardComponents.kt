@@ -136,8 +136,8 @@ fun ColumnScope.CustomDashBoardAppBar(
 }
 
 @Composable
-fun FileCard(file: ProjectFile, onClick: () -> Unit) {
-    Card(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
+fun FileCard(modifier: Modifier = Modifier, file: ProjectFile, onClick: () -> Unit) {
+    Card(onClick = onClick, modifier = modifier.fillMaxWidth()) {
         Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
             Icon(Icons.Default.Description, null, modifier = Modifier.size(32.dp))
             Spacer(Modifier.width(16.dp))
