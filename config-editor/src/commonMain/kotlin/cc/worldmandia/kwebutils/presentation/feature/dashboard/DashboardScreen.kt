@@ -41,7 +41,7 @@ import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 )
 @Composable
 fun DashboardScreen(
-    viewModel: DashboardViewModel, onFileOpen: (ProjectFile) -> Unit, themeState: DynamicMaterialThemeState
+    viewModel: DashboardViewModel, onFileOpen: (ProjectFile) -> Unit, themeState: DynamicMaterialThemeState,
 ) {
     val files by viewModel.files.collectAsStateWithLifecycle()
 
@@ -123,7 +123,7 @@ fun DashboardScreen(
             } else {
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     items(files, key = { it.id }) { file ->
-                        FileCard(file = file, onClick = { onFileOpen(file) })
+                        FileCard(Modifier, file = file, onClick = { onFileOpen(file) })
                     }
                 }
             }

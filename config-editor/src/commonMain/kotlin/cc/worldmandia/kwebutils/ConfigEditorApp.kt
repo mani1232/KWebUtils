@@ -83,7 +83,7 @@ fun StartConfigEditorApp() {
                 NavDisplay(
                     backStack = backStack,
                     onBack = { backStack.removeLastOrNull() },
-                    entryProvider = koinEntryProvider()
+                    entryProvider = koinEntryProvider(),
                 )
             }
         }

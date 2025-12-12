@@ -1,111 +1,118 @@
 package cc.worldmandia
 
-import kotlinx.io.*
-import kotlinx.io.files.Path
-import kotlinx.io.files.SystemFileSystem
+import okio.*
+import okio.Path.Companion.toPath
 
 data class AssetInfo(
-    val offset: Long, val size: Int, val isCompressed: Boolean
-)
+    val offset: Long,
+    val size: Int,
+    val isCompressed: Boolean,
+    val path: String
+) {
+    val etag: String get() = "\"${path.hashCode().toString(16)}-$size-$offset\""
+}
+
+private const val MAGIC = "KOTLIN_FRONTEND_APP!"
+private const val MAGIC_SIZE = 20L
+private const val FOOTER_SIZE = MAGIC_SIZE + 8L
 
 class AssetManager {
-    private val index = mutableMapOf<String, AssetInfo>()
+    private val exePath by lazy { getSelfPath().toPath() }
+    private val fileSystem = FileSystem.SYSTEM
 
-    private val exePath = Path(getSelfPath())
-    private val fileSystem = SystemFileSystem
+    private val sharedHandle: FileHandle by lazy {
+        try {
+            fileSystem.openReadOnly(exePath)
+        } catch (e: Exception) {
+            println("❌ Critical Error: Cannot open executable for reading: ${e.message}")
+            throw e
+        }
+    }
 
-    private val MAGIC = "KOTLIN_FRONTEND_APP!"
-    private val MAGIC_SIZE = 20L
-    private val OFFSET_SIZE = 8L
-    private val FOOTER_SIZE = MAGIC_SIZE + OFFSET_SIZE
-
-    init {
+    private val index: Map<String, AssetInfo> by lazy {
         parseIndex()
     }
 
-    private fun parseIndex() {
-        if (!fileSystem.exists(exePath)) {
-            println("Warning: Could not open executable at $exePath")
-            return
-        }
+    private fun parseIndex(): Map<String, AssetInfo> {
+        if (!fileSystem.exists(exePath)) return emptyMap()
 
-        val metadata = try {
-            fileSystem.metadataOrNull(exePath)
+        val tempIndex = mutableMapOf<String, AssetInfo>()
+
+        try {
+            val fileSize = sharedHandle.size()
+            if (fileSize < FOOTER_SIZE) return emptyMap()
+
+            val footerBuffer = Buffer()
+            sharedHandle.read(fileSize - FOOTER_SIZE, footerBuffer, FOOTER_SIZE)
+
+            val startOffset = footerBuffer.readLongLe()
+            val magic = footerBuffer.readUtf8(MAGIC_SIZE)
+
+            if (magic != MAGIC) {
+                println("⚠️ AssetManager: Magic mismatch. Expected '$MAGIC', got '$magic'")
+                return emptyMap()
+            }
+
+            val dataEnd = fileSize - FOOTER_SIZE
+
+            sharedHandle.source(startOffset).buffer().use { source ->
+                var currentPos = startOffset
+                while (currentPos < dataEnd && !source.exhausted()) {
+                    val pathLen = source.readIntLe()
+                    val path = source.readUtf8(pathLen.toLong())
+                    val isCompressed = source.readByte().toInt() == 1
+                    val contentLen = source.readIntLe()
+
+                    val headerSize = 4L + pathLen + 1 + 4
+                    val contentOffset = currentPos + headerSize
+
+                    tempIndex[path] = AssetInfo(contentOffset, contentLen, isCompressed, path)
+
+                    source.skip(contentLen.toLong())
+                    currentPos += headerSize + contentLen
+                }
+            }
+            println("✅ AssetManager: loaded ${tempIndex.size} assets.")
+        } catch (e: Exception) {
+            println("❌ AssetManager Error: ${e.message}")
+            e.printStackTrace()
+        }
+        return tempIndex
+    }
+
+    fun getAssetInfo(path: String): AssetInfo? = index[path]
+
+    fun getSource(info: AssetInfo): Source? {
+        return try {
+            sharedHandle.source(info.offset).limit(info.size.toLong())
         } catch (e: Exception) {
             e.printStackTrace()
             null
         }
+    }
 
-        val fileSize = metadata?.size ?: return
-
-        if (fileSize < FOOTER_SIZE) return
-
+    fun close() {
         try {
-            fileSystem.source(exePath).buffered().use { source ->
-                source.skip(fileSize - MAGIC_SIZE)
-                val magic = source.readString(MAGIC_SIZE)
-                if (magic != MAGIC) return
-            }
-
-            var startOffset: Long = 0
-            fileSystem.source(exePath).buffered().use { source ->
-                source.skip(fileSize - FOOTER_SIZE)
-                startOffset = source.readLongLe()
-            }
-
-            val dataEnd = fileSize - FOOTER_SIZE
-            var currentPos = startOffset
-
-            fileSystem.source(exePath).buffered().use { source ->
-                source.skip(startOffset)
-
-                while (currentPos < dataEnd && !source.exhausted()) {
-                    val pathLen = source.readIntLe()
-                    currentPos += 4
-
-                    val path = source.readString(pathLen.toLong())
-                    currentPos += pathLen
-
-                    val isCompressedByte = source.readByte()
-                    currentPos += 1
-                    val isCompressed = isCompressedByte.toInt() == 1
-
-                    val contentLen = source.readIntLe()
-                    currentPos += 4
-
-                    val contentOffset = currentPos
-
-                    index[path] = AssetInfo(contentOffset, contentLen, isCompressed)
-
-                    source.skip(contentLen.toLong())
-                    currentPos += contentLen
-                }
-            }
-        } catch (e: Exception) {
-            println("Error parsing asset index: ${e.message}")
+            sharedHandle.close()
+        } catch (_: Exception) {
         }
     }
-
-    fun load(path: String): Pair<ByteArray, Boolean>? {
-        val info = index[path] ?: return null
-        if (!fileSystem.exists(exePath)) return null
-
-        return try {
-            fileSystem.source(exePath).buffered().use { source ->
-                source.skip(info.offset)
-
-                val buffer = source.readByteArray(info.size)
-                Pair(buffer, info.isCompressed)
-            }
-        } catch (e: Exception) {
-            println("Error loading asset $path: ${e.message}")
-            null
-        }
-    }
-
-    fun exists(path: String) = index.containsKey(path)
 }
 
 val assetManager = AssetManager()
-
 expect fun getSelfPath(): String
+
+fun Source.limit(byteCount: Long): Source {
+    require(byteCount >= 0) { "byteCount < 0: $byteCount" }
+    return object : ForwardingSource(this) {
+        private var remaining = byteCount
+        override fun read(sink: Buffer, byteCount: Long): Long {
+            if (remaining == 0L) return -1L
+            val toRead = minOf(byteCount, remaining)
+            val read = super.read(sink, toRead)
+            if (read == -1L) return -1L
+            remaining -= read
+            return read
+        }
+    }
+}

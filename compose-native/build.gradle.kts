@@ -14,13 +14,13 @@ plugins {
 
 kotlin {
     //macosArm64()
-    macosX64 {
-        binaries {
-            executable {
-                entryPoint = "cc.worldmandia.main"
-            }
-        }
-    }
+    //macosX64 { // TODO temporary disabled
+    //    binaries {
+    //        executable {
+    //            entryPoint = "cc.worldmandia.main"
+    //        }
+    //    }
+    //}
     //linuxArm64()
     linuxX64 {
         binaries {
@@ -33,26 +33,18 @@ kotlin {
         binaries {
             executable {
                 entryPoint = "cc.worldmandia.main"
-                linkerOpts("-mwindows")
+                //linkerOpts("-mwindows")
             }
         }
     }
 
     sourceSets {
-        mingwX64Main.dependencies {
-            implementation(custom.webviewko.windows)
-        }
-        linuxX64Main.dependencies {
-            implementation(custom.webviewko.linux)
-        }
-        macosX64Main.dependencies {
-            implementation(custom.webviewko.macos)
-        }
         commonMain.dependencies {
             implementation(custom.kotlin.coroutines)
-            implementation(custom.kotlin.io)
+            implementation(custom.kotlin.io.okio)
             implementation(custom.ktor.server.core)
             implementation(custom.ktor.server.cio)
+            implementation(custom.webviewko)
         }
     }
 }
@@ -100,8 +92,7 @@ val targetPlatforms = listOf(
 )
 
 val MAGIC_STRING = "KOTLIN_FRONTEND_APP!"
-val EXTENSIONS_TO_COMPRESS =
-    setOf("html", "js", "mjs", "css", "json", "xml", "txt", "map", "wasm", "obj", "vert", "frag", "glsl", "svg")
+val EXTENSIONS_TO_COMPRESS = setOf("html", "js", "mjs", "css", "json", "xml", "txt", "map", "wasm", "obj", "vert", "frag", "glsl", "svg")
 
 val packageTasks = targetPlatforms.map { platform ->
     tasks.register("packageDistribution${platform.taskNameSuffix}") {
@@ -120,18 +111,21 @@ val packageTasks = targetPlatforms.map { platform ->
         outputs.file(outputExeFile).withPropertyName("outputExe")
 
         doLast {
+            val webDirFile = wwwDir.get().asFile
+            if (!webDirFile.exists()) {
+                throw GradleException("WWW directory not found. Run publishKWebUtils task first: ${webDirFile.absolutePath}")
+            }
+
             Brotli4jLoader.ensureAvailability()
             val brotliParams = Encoder.Parameters().setQuality(11)
 
             val sourceFile = sourceExeFile.get().asFile
             val targetFile = outputExeFile.get().asFile
-            val webDirFile = wwwDir.get().asFile
 
-            if (!sourceFile.exists()) error("Source binary not found: ${sourceFile.absolutePath}")
+            if (!sourceFile.exists()) throw GradleException("Source binary not found: ${sourceFile.absolutePath}")
 
-            println("📦 Packaging [${platform.taskNameSuffix}]: ${sourceFile.name} -> ${targetFile.name}")
+            println("📦 Packaging [${platform.taskNameSuffix}] -> ${targetFile.name}")
 
-            targetFile.delete()
             sourceFile.copyTo(targetFile, overwrite = true)
             targetFile.setExecutable(true)
 
@@ -139,63 +133,53 @@ val packageTasks = targetPlatforms.map { platform ->
                 val startOffset = raf.length()
                 raf.seek(startOffset)
 
-                println("📍 Appending assets starting at offset: $startOffset")
+                val leBuffer = ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN)
 
-                val numBuffer = ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN)
-
-                fun writeIntLE(value: Int) {
-                    numBuffer.clear()
-                    numBuffer.putInt(value)
-                    raf.write(numBuffer.array(), 0, 4)
+                fun writeInt(value: Int) {
+                    leBuffer.clear()
+                    leBuffer.putInt(value)
+                    raf.write(leBuffer.array(), 0, 4)
                 }
 
-                fun writeLongLE(value: Long) {
-                    numBuffer.clear()
-                    numBuffer.putLong(value)
-                    raf.write(numBuffer.array(), 0, 8)
+                fun writeLong(value: Long) {
+                    leBuffer.clear()
+                    leBuffer.putLong(value)
+                    raf.write(leBuffer.array(), 0, 8)
                 }
 
                 var filesCount = 0
                 var savedBytesTotal = 0L
 
-                webDirFile.walkTopDown()
-                    .filter { it.isFile }
-                    .forEach { file ->
-                        val relativePath = "/" + file.toRelativeString(webDirFile).replace("\\", "/")
-                        val ext = file.extension.lowercase()
-                        val shouldCompress = ext in EXTENSIONS_TO_COMPRESS
+                webDirFile.walkTopDown().filter { it.isFile }.forEach { file ->
+                    val relativePath = "/" + file.toRelativeString(webDirFile).replace("\\", "/")
+                    val ext = file.extension.lowercase()
+                    val shouldCompress = ext in EXTENSIONS_TO_COMPRESS
+                    val originalBytes = file.readBytes()
 
-                        val originalBytes = file.readBytes()
-                        val (bytesToWrite, isCompressed) = if (shouldCompress) {
-                            val bos = ByteArrayOutputStream(originalBytes.size / 2)
-                            BrotliOutputStream(bos, brotliParams).use { it.write(originalBytes) }
-                            val compressed = bos.toByteArray()
+                    val (finalBytes, isCompressed) = if (shouldCompress) {
+                        val bos = ByteArrayOutputStream(originalBytes.size / 2)
+                        BrotliOutputStream(bos, brotliParams).use { it.write(originalBytes) }
+                        val compressed = bos.toByteArray()
+                        if (compressed.size < originalBytes.size) {
+                            savedBytesTotal += (originalBytes.size - compressed.size)
+                            compressed to true
+                        } else originalBytes to false
+                    } else originalBytes to false
 
-                            if (compressed.size < originalBytes.size) {
-                                savedBytesTotal += (originalBytes.size - compressed.size)
-                                compressed to true
-                            } else {
-                                originalBytes to false
-                            }
-                        } else {
-                            originalBytes to false
-                        }
+                    val pathBytes = relativePath.toByteArray(Charsets.UTF_8)
+                    writeInt(pathBytes.size)
+                    raf.write(pathBytes)
+                    raf.write(if (isCompressed) 1 else 0)
+                    writeInt(finalBytes.size)
+                    raf.write(finalBytes)
 
-                        val pathBytes = relativePath.toByteArray(Charsets.UTF_8)
-                        writeIntLE(pathBytes.size)
-                        raf.write(pathBytes)
-                        raf.write(if (isCompressed) 1 else 0)
-                        writeIntLE(bytesToWrite.size)
-                        raf.write(bytesToWrite)
+                    filesCount++
+                }
 
-                        filesCount++
-                    }
-
-                writeLongLE(startOffset)
+                writeLong(startOffset)
                 raf.write(MAGIC_STRING.toByteArray(Charsets.UTF_8))
 
-                println("✅ [${platform.taskNameSuffix}] Packed $filesCount files. Saved: ${savedBytesTotal / 1024} KB.")
-                println("📝 Footer: Offset=$startOffset, Magic='$MAGIC_STRING'")
+                println("✅ Packed $filesCount files. Saved: ${savedBytesTotal / 1024} KB.")
             }
         }
     }
