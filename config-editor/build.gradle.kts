@@ -49,7 +49,7 @@ kotlin {
             }
         }
         binaries.executable()
-
+        generateTypeScriptDefinitions()
     }
 
     sourceSets {
@@ -106,6 +106,7 @@ kotlin {
         webMain.dependencies {
             implementation(kotlinWrappers.browser)
             implementation(kotlinWrappers.web)
+            implementation(npm("npm:@types/three", "0.182.0"))
         }
     }
     applyDefaultHierarchyTemplate()
