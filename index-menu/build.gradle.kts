@@ -20,7 +20,6 @@ kotlin {
 
             implementation(kotlinWrappers.react)
             implementation(kotlinWrappers.reactDom)
-            implementation(kotlinWrappers.reactRouter)
 
             implementation(kotlinWrappers.emotion.styled)
 

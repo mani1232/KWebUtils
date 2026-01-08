@@ -44,7 +44,7 @@ dependencyResolutionManagement {
 
     versionCatalogs {
         create("kotlinWrappers") {
-            val wrappersVersion = "2025.12.6"
+            val wrappersVersion = "2026.1.3"
             from("org.jetbrains.kotlin-wrappers:kotlin-wrappers-catalog:$wrappersVersion")
         }
         create("custom") {
@@ -52,11 +52,11 @@ dependencyResolutionManagement {
 
             val devVersion = providers.gradleProperty("compose-dev.version").get()
 
-            version("androidx-lifecycle", "2.10.0-alpha07$devVersion")
-            version("androidx-nav3", "1.1.0-alpha01$devVersion")
-            version("androidx-adaptive", "1.3.0-alpha03$devVersion")
-            version("androidx-material3", "1.11.0-alpha01$devVersion")
-            version("composeMultiplatform", "1.11.0-alpha01$devVersion")
+            version("androidx-lifecycle", "2.10.0-alpha08$devVersion")
+            version("androidx-nav3", "1.1.0-alpha02$devVersion")
+            version("androidx-adaptive", "1.3.0-alpha04$devVersion")
+            version("androidx-material3", "1.11.0-alpha02$devVersion")
+            version("composeMultiplatform", "1.11.0-alpha02$devVersion")
         }
     }
 }
