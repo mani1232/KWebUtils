@@ -25,8 +25,8 @@ plugins {
 
 dependencyResolutionManagement {
     repositories {
-        maven("https://repo.worldmandia.cc/snapshots")
         mavenLocal()
+        maven("https://repo.worldmandia.cc/snapshots")
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
         maven("https://packages.jetbrains.team/maven/p/firework/dev")
         maven("https://central.sonatype.com/repository/maven-snapshots/")
@@ -44,7 +44,7 @@ dependencyResolutionManagement {
 
     versionCatalogs {
         create("kotlinWrappers") {
-            val wrappersVersion = "2026.1.3"
+            val wrappersVersion = "2026.1.5"
             from("org.jetbrains.kotlin-wrappers:kotlin-wrappers-catalog:$wrappersVersion")
         }
         create("custom") {
