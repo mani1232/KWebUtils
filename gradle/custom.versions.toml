@@ -32,7 +32,7 @@ rpc = "0.10.2"
 webviewko = "0.7.0"
 coroutines = "1.10.2"
 kotlinIo = "0.8.2"
-materialKolor = "5.0.0-alpha05"
+materialKolor = "5.0.0-alpha04"
 lyricist = "1.0.0-dev"
 multiplatformLocale = "0.10.0-SNAPSHOT"
 
