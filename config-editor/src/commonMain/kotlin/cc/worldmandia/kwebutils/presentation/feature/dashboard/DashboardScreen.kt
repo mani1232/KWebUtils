@@ -51,7 +51,6 @@ fun DashboardScreen(
     val launcher = rememberFilePickerLauncher(
         mode = FileKitMode.MultipleWithState(maxItems = 5),
         type = FileKitType.File(extensions = listOf("yml", "yaml", "json", "json5")),
-        title = "Open config files"
     ) { state ->
         if (state is FileKitPickerState.Completed) {
             viewModel.onFilesSelected(state.result)
