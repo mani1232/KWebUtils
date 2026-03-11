@@ -3,7 +3,7 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
     repositories {
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        maven("https://redirector.kotlinlang.org/maven/compose-dev")
         maven("https://central.sonatype.com/repository/maven-snapshots/")
         maven("https://packages.jetbrains.team/maven/p/firework/dev")
         maven("https://redirector.kotlinlang.org/maven/bootstrap")
@@ -27,7 +27,7 @@ dependencyResolutionManagement {
     repositories {
         mavenLocal()
         maven("https://repo.worldmandia.cc/snapshots")
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        maven("https://redirector.kotlinlang.org/maven/compose-dev")
         maven("https://packages.jetbrains.team/maven/p/firework/dev")
         maven("https://central.sonatype.com/repository/maven-snapshots/")
         maven("https://redirector.kotlinlang.org/maven/bootstrap")
@@ -44,19 +44,18 @@ dependencyResolutionManagement {
 
     versionCatalogs {
         create("kotlinWrappers") {
-            val wrappersVersion = "2026.2.21"
+            val wrappersVersion = "2026.3.10"
             from("org.jetbrains.kotlin-wrappers:kotlin-wrappers-catalog:$wrappersVersion")
         }
         create("custom") {
             from(files("gradle/custom.versions.toml"))
 
             val devVersion = providers.gradleProperty("compose-dev.version").get()
-
-            version("androidx-lifecycle", "2.10.0-alpha09+dev3670")
-            version("androidx-nav3", "1.1.0-alpha03$devVersion")
-            version("androidx-adaptive", "1.3.0-alpha05$devVersion")
-            version("androidx-material3", "1.11.0-alpha03$devVersion")
-            version("composeMultiplatform", "1.11.0-alpha03$devVersion")
+            version("androidx-lifecycle", "2.11.0-alpha02$devVersion")
+            version("androidx-nav3", "1.1.0-alpha05$devVersion")
+            version("androidx-adaptive", "1.3.0-alpha07$devVersion")
+            version("androidx-material3", "1.11.0-alpha05$devVersion")
+            version("composeMultiplatform", "1.11.0-alpha05$devVersion")
         }
     }
 }
