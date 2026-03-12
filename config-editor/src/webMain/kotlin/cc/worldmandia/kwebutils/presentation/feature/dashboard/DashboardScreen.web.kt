@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draganddrop.DragAndDropEvent
 import androidx.compose.ui.draganddrop.domDataTransferOrNull
 import cc.worldmandia.kwebutils.domain.model.ProjectFile
-import js.core.JsPrimitives.toKotlinString
+import js.string.JsStrings.toKotlinString
 import kotlinx.browser.window
 import org.w3c.dom.MediaQueryList
 import org.w3c.dom.events.Event
